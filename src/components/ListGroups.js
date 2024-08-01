@@ -21,15 +21,14 @@ export default function ListGroups() {
     setJoinModalState(false);
   };
 
-  useEffect(() => getGroups(), []);
+  useEffect(() => getGroups(), [createModalState, joinModalState]);
 
   function getGroups() {
     retriveAllGroupsApi().then((response) => setGroups(response.data));
   }
 
   return (
-    <div>
-      <menu>
+    <>
         <CreateGroupModal
           isModalOpen={createModalState}
           closeModal={closeCreateModal}
@@ -44,14 +43,14 @@ export default function ListGroups() {
             className="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
             type="button"
           >
-            Create group
+            Create Group
           </button>
           <button
             onClick={openJoinModal}
             className="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 ml-2"
             type="button"
           >
-            Join group
+            Join Group
           </button>
         </div>
 
@@ -106,8 +105,6 @@ export default function ListGroups() {
             </a>
           </div> */}
         </div>
-
-      </menu>
-    </div>
+    </>
   );
 }

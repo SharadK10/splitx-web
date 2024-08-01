@@ -1,4 +1,5 @@
 export function SingleGroupCard({group}) {
+    const groupUrl = "/groups/" + group.groupCode
   return (
     <li>
       <div class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-secondary-foreground hover:bg-secondary/80 px-4 h-fit w-full py-3 rounded-lg border bg-card shadow-sm text-base">
@@ -6,7 +7,7 @@ export function SingleGroupCard({group}) {
           <div class="text-base flex gap-2 justify-between">
             <a
               class="flex-1 overflow-hidden text-ellipsis"
-              href="/groups/XXX"
+              href={groupUrl}
             >
               {group.groupName}
             </a>
