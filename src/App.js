@@ -1,6 +1,6 @@
 import { Route, Routes } from 'react-router-dom';
 import './App.css';
-import CreateGroupModal from './components/CreateGroupModal';
+// import CreateGroupModal from './components/CreateGroupModal';
 import Header from './components/Header';
 import ListGroups from './components/ListGroups';
 import GroupTransaction from './components/GroupTransaction';

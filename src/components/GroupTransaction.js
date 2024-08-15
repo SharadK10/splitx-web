@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { getGroupTransactions } from "./Api";
+import { getGroupTransactions, getGroupUsers } from "./Api";
 import AddExpenseModal from "./AddExpenseModal";
 export default function GroupTransaction() {
     const location = useLocation();
     const groupCode = location.pathname.split('/')[2];
 
     const [transactions, setTransactions] = useState([])
+
+    const [users, setUsers] = useState([])
 
     const [addExpenseModalState, setAddExpenseModalState] = useState(false)
 
@@ -15,6 +17,10 @@ export default function GroupTransaction() {
     const closeModal = () => setAddExpenseModalState(false);
 
     useEffect(()=>{
+        getGroupUsers(groupCode).then((response) => {
+          //console.log(response.data);
+          setUsers(response.data)
+    })
         getGroupTransactions(groupCode).then((response) => setTransactions(response.data.transaction));
         console.log(groupCode);
 
@@ -25,6 +31,7 @@ export default function GroupTransaction() {
         <AddExpenseModal
           isModalOpen={addExpenseModalState}
           closeModal={closeModal}
+          users={users}
         />
         <div className="flex flex-row justify-end m-4">
         <button

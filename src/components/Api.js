@@ -27,3 +27,11 @@ export function joinGroupApi(groupCode) {
 export function getGroupTransactions(groupCode) {
     return apiClient.get("/api/group/"+groupCode);
 }
+
+export function getGroupUsers(groupCode) {
+    return apiClient.get("/api/group/"+groupCode+"/users");
+}
+
+export function authenticateUserApi() {
+    return apiClient.get("/api/user/");
+}

@@ -1,14 +1,48 @@
 import React, { useState } from 'react';
 
-export default function AddExpenseModal({isModalOpen,closeModal}) {
+export default function AddExpenseModal({ isModalOpen, closeModal, users }) {
+    const [description, setDescription] = useState('');
+    const [amount, setAmount] = useState(0);
+    const [payerModal, setPayerModal] = useState(false);
+    const [openAccordionItem, setOpenAccordionItem] = useState(null);
+    const [buttonVisibility, setButtonVisibility] = useState(false)
 
-    const [description,setDescription] = useState('');
-
-    const [amount,setAmount] = useState(0);
+    const [payers, setPayers] = useState({})
 
     function addExpense() {
-        console.log("Add Expense")
+        console.log("Add Expense");
     }
+
+    function togglePayerModal() {
+        setPayerModal(!payerModal);
+    }
+
+    function toggleAccordionItem(id) {
+        setOpenAccordionItem(openAccordionItem === id ? null : id);
+    }
+
+    function handleChange(e) {
+        console.log(`PayersssssssssStart:`, payers);
+
+        const updatedValue = parseInt(e.target.value) || 0; // Parse input value as an integer
+        setPayers(payers[e.target.id] = updatedValue); // Update the payers object
+    
+        let total = 0;
+        for (let key in payers) {
+            total += payers[key]; // Accumulate the total
+        }
+    
+        console.log(`Amount: ${amount}`);
+        console.log(`Payers:`, payers);
+        console.log(`Total: ${total}`);
+    
+        if (total === parseInt(amount)) {
+            setButtonVisibility(true); // Show the button if total matches amount
+        } else {
+            setButtonVisibility(false); // Hide the button otherwise
+        }
+    }
+    
 
     return (
         <>
@@ -48,7 +82,7 @@ export default function AddExpenseModal({isModalOpen,closeModal}) {
                                     <span className="sr-only">Close modal</span>
                                 </button>
                             </div>
-                            <form className="p-4 md:p-5">
+                            <div className="p-4 md:p-5">
                                 <div className="grid gap-4 mb-4 grid-cols-2">
                                     <div className="col-span-2">
                                         <label
@@ -63,7 +97,7 @@ export default function AddExpenseModal({isModalOpen,closeModal}) {
                                             id="description"
                                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                             placeholder="What for?"
-                                            onChange={(e)=>setDescription(e.target.value)}
+                                            onChange={(e) => setDescription(e.target.value)}
                                             required
                                         />
                                     </div>
@@ -80,70 +114,137 @@ export default function AddExpenseModal({isModalOpen,closeModal}) {
                                             id="amount"
                                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                             placeholder="How much?"
-                                            onChange={(e)=>setAmount(e.target.value)}
+                                            onChange={(e) => setAmount(e.target.value)}
                                             required
                                         />
                                     </div>
 
-                                    <div class="flex items-center ps-4 border border-gray-200 rounded dark:border-gray-700">
-                                        <input checked id="bordered-radio-1" type="radio" value="" name="bordered-radio" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
-                                        <label for="bordered-radio-1" class="w-full py-4 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Individual Payer</label>
-                                    </div>
-                                    <div class="flex items-center ps-4 border border-gray-200 rounded dark:border-gray-700">
-                                        <input id="bordered-radio-2" type="radio" value="" name="bordered-radio" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
-                                        <label for="bordered-radio-2" class="w-full py-4 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Multiple Payers</label>
-                                    </div>
-                                    
-                                    {/* <div className="col-span-2 sm:col-span-1">
-                                        <label
-                                            htmlFor="price"
-                                            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                                        >
-                                            Price
-                                        </label>
-                                        <input
-                                            type="number"
-                                            name="price"
-                                            id="price"
-                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                            placeholder="$2999"
-                                            required
-                                        />
-                                    </div>
-                                    <div className="col-span-2 sm:col-span-1">
-                                        <label
-                                            htmlFor="category"
-                                            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                                        >
-                                            Category
-                                        </label>
-                                        <select
-                                            id="category"
-                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                        >
-                                            <option selected>Select category</option>
-                                            <option value="TV">TV/Monitors</option>
-                                            <option value="PC">PC</option>
-                                            <option value="GA">Gaming/Console</option>
-                                            <option value="PH">Phones</option>
-                                        </select>
-                                    </div>
-                                    <div className="col-span-2">
-                                        <label
-                                            htmlFor="description"
-                                            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                                        >
-                                            Product Description
-                                        </label>
-                                        <textarea
-                                            id="description"
-                                            rows="4"
-                                            className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                            placeholder="Write product description here"
-                                        ></textarea>
-                                    </div> */}
+                                    <div>Paid by <button className="text-blue-700" onClick={togglePayerModal}>you</button> split <button className="text-blue-700">equally</button></div>
                                 </div>
-                                <button onClick={addExpense}
+                                {payerModal && (
+                                    <div id="select-modal" tabIndex="-1" aria-hidden="true" className="fixed inset-0 z-50 overflow-y-auto overflow-x-hidden flex items-center justify-center w-full h-[calc(100%-1rem)] max-h-full">
+                                        <div className="relative p-4 w-full max-w-md max-h-full">
+                                            <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                                                <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                                                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                                                        Select Payers
+                                                    </h3>
+                                                    <button type="button" className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="select-modal" onClick={togglePayerModal}>
+                                                        <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                                                        </svg>
+                                                        <span className="sr-only">Close modal</span>
+                                                    </button>
+                                                </div>
+
+                                                <div id="accordion-color" data-accordion="collapse" data-active-classes="bg-blue-100 dark:bg-gray-800 text-blue-600 dark:text-white">
+                                                    <h2 id="accordion-color-heading-1">
+                                                        <button type="button" className="flex items-center justify-between w-full p-5 font-medium rtl:text-right text-gray-500 border border-b-0 border-gray-200 focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-800 dark:border-gray-700 dark:text-gray-400 hover:bg-blue-100 dark:hover:bg-gray-800 gap-3" data-accordion-target="#accordion-color-body-1" aria-expanded="true" aria-controls="accordion-color-body-1" onClick={() => toggleAccordionItem(1)}>
+                                                            <span>Individual Payer</span>
+                                                            <svg data-accordion-icon className={`w-3 h-3 ${openAccordionItem === 1 ? 'rotate-180' : ''} shrink-0`} aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                                                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5 5 1 1 5" />
+                                                            </svg>
+                                                        </button>
+                                                    </h2>
+                                                    <div id="accordion-color-body-1" className={`${openAccordionItem === 1 ? '' : 'hidden'}`} aria-labelledby="accordion-color-heading-1">
+                                                        <div className="p-5 border border-b-0 border-gray-200 dark:border-gray-700 dark:bg-gray-900">
+                                                            <ul className="space-y-4 mb-4 h-64 overflow-scroll">
+                                                                {users.map((data, index) => (
+                                                                    <li key={index}>
+                                                                        <input
+                                                                            type="radio" 
+                                                                            id={`user-${index}`} 
+                                                                            name="payer" 
+                                                                            value={data.user.id} 
+                                                                            className="hidden peer" 
+                                                                            required 
+                                                                        />
+                                                                        <label 
+                                                                            htmlFor={`user-${index}`} 
+                                                                            className="inline-flex items-center justify-between w-full p-5 text-gray-900 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-500 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-900 hover:bg-gray-100 dark:text-white dark:bg-gray-600 dark:hover:bg-gray-500"
+                                                                        >                           
+                                                                            <div className="block">
+                                                                                <div className="w-full text-lg font-semibold">{data.user.name}</div>
+                                                                                <div className="w-full text-gray-500 dark:text-gray-400">{data.user.email}</div>
+                                                                            </div>
+                                                                        </label>
+                                                                    </li>
+                                                                ))}
+                                                            </ul>
+
+                                                        </div>
+                                                    </div>
+                                                    <h2 id="accordion-color-heading-2">
+                                                        <button type="button" className="flex items-center justify-between w-full p-5 font-medium rtl:text-right text-gray-500 border border-b-0 border-gray-200 focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-800 dark:border-gray-700 dark:text-gray-400 hover:bg-blue-100 dark:hover:bg-gray-800 gap-3" data-accordion-target="#accordion-color-body-2" aria-expanded="false" aria-controls="accordion-color-body-2" onClick={() => toggleAccordionItem(2)}>
+                                                            <span>Multiple Payers</span>
+                                                            <svg data-accordion-icon className={`w-3 h-3 ${openAccordionItem === 2 ? 'rotate-180' : ''} shrink-0`} aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                                                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5 5 1 1 5" />
+                                                            </svg>
+                                                        </button>
+                                                    </h2>
+                                                    <div id="accordion-color-body-2" className={`${openAccordionItem === 2 ? '' : 'hidden'}`} aria-labelledby="accordion-color-heading-2">
+                                                        <div className="p-5 border border-b-0 border-gray-200 dark:border-gray-700">
+                                                            <ul className="space-y-4 mb-4 h-64 overflow-scroll">
+                                                                {users.map((data, index) => (
+                                                                    
+                                                                    <li key={index}>
+                                                             
+                                                                        <label 
+                                                                            htmlFor={`user-${index}`} 
+                                                                            className="inline-flex items-center justify-between w-full p-5 text-gray-900 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-500 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-900 hover:bg-gray-100 dark:text-white dark:bg-gray-600 dark:hover:bg-gray-500"
+                                                                        >                           
+                                                                            <div className="block">
+                                                                                <div className="mb-2 text-lg font-semibold">{data.user.name}</div>
+                                                                                <input onChange={handleChange} type="number" id={data.user.userId} className="w-full block p-2.5 z-20 text-sm text-gray-900 bg-gray-50 rounded-s-lg rounded-e-lg border-e-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-e-gray-700  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500" placeholder="Enter amount" required />                                                                            
+                                                                            </div>
+                                                                        </label>
+                                                                    </li>
+                                                                ))}
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                    {buttonVisibility ?
+                                                    <button
+                                    className="m-2 text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    >
+                                    <svg
+                                        className="me-1 -ms-1 w-5 h-5"
+                                        fill="currentColor"
+                                        viewBox="0 0 20 20"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                        <path
+                                            fillRule="evenodd"
+                                            d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                                            clipRule="evenodd"
+                                        ></path>
+                                    </svg>
+                                    Save
+                                </button> : <button
+                                    className="m-2 inline-flex items-center text-white bg-blue-400 dark:bg-blue-500 cursor-not-allowed font-medium rounded-lg text-sm px-5 py-2.5 text-center" disabled
+                                    >
+                                    <svg
+                                        className="me-1 -ms-1 w-5 h-5"
+                                        fill="currentColor"
+                                        viewBox="0 0 20 20"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                        <path
+                                            fillRule="evenodd"
+                                            d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                                            clipRule="evenodd"
+                                        ></path>
+                                    </svg>
+                                    Save
+                                </button> } 
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
+                                <button 
+                                    onClick={addExpense}
                                     className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                 >
                                     <svg
@@ -160,7 +261,8 @@ export default function AddExpenseModal({isModalOpen,closeModal}) {
                                     </svg>
                                     Add
                                 </button>
-                            </form>
+
+                            </div>
                         </div>
                     </div>
                 </div>
