@@ -28,11 +28,14 @@ export default function GroupTransaction() {
 
     return (
         <>
-        <AddExpenseModal
-          isModalOpen={addExpenseModalState}
-          closeModal={closeModal}
-          users={users}
-        />
+        {
+          users.length !== 0 && 
+          <AddExpenseModal
+            isModalOpen={addExpenseModalState}
+            closeModal={closeModal}
+            users={users}
+          />
+        }
         <div className="flex flex-row justify-end m-4">
         <button
             onClick={openModal}
