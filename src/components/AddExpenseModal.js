@@ -1,13 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { TextField } from '@mui/material';
 
 export default function AddExpenseModal({ isModalOpen, closeModal, users }) {
     const [description, setDescription] = useState('');
     const [amount, setAmount] = useState(0);
     const [payerModal, setPayerModal] = useState(false);
     const [openAccordionItem, setOpenAccordionItem] = useState(null);
+    const [usersExpense, setUsersExpense] = useState(() => users.map(u => ({
+        id: u.user.userId,
+        name: u.user.name,
+        amt: null
+    })));
     const [buttonVisibility, setButtonVisibility] = useState(false)
-
-    const [payers, setPayers] = useState({})
 
     function addExpense() {
         console.log("Add Expense");
@@ -16,34 +20,53 @@ export default function AddExpenseModal({ isModalOpen, closeModal, users }) {
     function togglePayerModal() {
         setPayerModal(!payerModal);
     }
-
-    function toggleAccordionItem(id) {
-        setOpenAccordionItem(openAccordionItem === id ? null : id);
+    function setUsers() {
+        return new Promise((resolve, reject) => {
+            return resolve(users.map(u => ({
+                id: u.user.userId,
+                name: u.user.name,
+                amt: null
+            })))
+        })
     }
-
-    function handleChange(e) {
-        console.log(`PayersssssssssStart:`, payers);
-
-        const updatedValue = parseInt(e.target.value) || 0; // Parse input value as an integer
-        setPayers(payers[e.target.id] = updatedValue); // Update the payers object
     
-        let total = 0;
-        for (let key in payers) {
-            total += payers[key]; // Accumulate the total
-        }
-    
-        console.log(`Amount: ${amount}`);
-        console.log(`Payers:`, payers);
-        console.log(`Total: ${total}`);
-    
-        if (total === parseInt(amount)) {
-            setButtonVisibility(true); // Show the button if total matches amount
+    async function toggleAccordionItem(id) {        
+        if(id === 2){
+            await setUsers().then((d) => {
+                setUsersExpense(d);
+                setOpenAccordionItem(openAccordionItem === id ? null : id);
+            }) 
+            
         } else {
-            setButtonVisibility(false); // Hide the button otherwise
+            setOpenAccordionItem(openAccordionItem === id ? null : id);
         }
     }
     
-
+    function handleChange(e, index, type) {
+        console.log("hereeeeeee");
+        if(type === 'multiple'){
+            const updatedItems = usersExpense.map((u, i) =>
+                i === index ? { ...u, amt: parseInt(e.target.value) } : u
+            );
+            setUsersExpense(updatedItems);
+            const totalSum = updatedItems.reduce((sum, item) => sum + item.amt, 0);
+    
+            if (totalSum === parseInt(amount)) {
+                setButtonVisibility(true);
+            } else {
+                setButtonVisibility(false);
+            }
+        } else if('single'){
+            const newItem = [{
+                id: (e.target.value).split('|')[0],
+                name: (e.target.value).split('|')[1],
+                amt: (e.target.value).split('|')[2],
+            }];
+            setUsersExpense(newItem);
+        }
+    }
+    console.log("usersExpense", usersExpense);
+    
     return (
         <>
             {isModalOpen && (
@@ -152,17 +175,18 @@ export default function AddExpenseModal({ isModalOpen, closeModal, users }) {
                                                                 {users.map((data, index) => (
                                                                     <li key={index}>
                                                                         <input
-                                                                            type="radio" 
-                                                                            id={`user-${index}`} 
-                                                                            name="payer" 
-                                                                            value={data.user.id} 
-                                                                            className="hidden peer" 
-                                                                            required 
+                                                                            type="radio"
+                                                                            id={`user-${index}`}
+                                                                            name="payer"
+                                                                            value={`${data.user.userId}|${data.user.name}|${amount}`}
+                                                                            className="hidden peer"
+                                                                            onChange={(e) => {handleChange(e, index, 'single')}}
+                                                                            required
                                                                         />
-                                                                        <label 
-                                                                            htmlFor={`user-${index}`} 
+                                                                        <label
+                                                                            htmlFor={`user-${index}`}
                                                                             className="inline-flex items-center justify-between w-full p-5 text-gray-900 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-500 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-900 hover:bg-gray-100 dark:text-white dark:bg-gray-600 dark:hover:bg-gray-500"
-                                                                        >                           
+                                                                        >
                                                                             <div className="block">
                                                                                 <div className="w-full text-lg font-semibold">{data.user.name}</div>
                                                                                 <div className="w-full text-gray-500 dark:text-gray-400">{data.user.email}</div>
@@ -185,17 +209,15 @@ export default function AddExpenseModal({ isModalOpen, closeModal, users }) {
                                                     <div id="accordion-color-body-2" className={`${openAccordionItem === 2 ? '' : 'hidden'}`} aria-labelledby="accordion-color-heading-2">
                                                         <div className="p-5 border border-b-0 border-gray-200 dark:border-gray-700">
                                                             <ul className="space-y-4 mb-4 h-64 overflow-scroll">
-                                                                {users.map((data, index) => (
-                                                                    
+                                                                {usersExpense.map((data, index) => (
                                                                     <li key={index}>
-                                                             
-                                                                        <label 
-                                                                            htmlFor={`user-${index}`} 
+                                                                        <label
+                                                                            htmlFor={`user-xyz-${index}`}
                                                                             className="inline-flex items-center justify-between w-full p-5 text-gray-900 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-500 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-900 hover:bg-gray-100 dark:text-white dark:bg-gray-600 dark:hover:bg-gray-500"
-                                                                        >                           
+                                                                        >
                                                                             <div className="block">
-                                                                                <div className="mb-2 text-lg font-semibold">{data.user.name}</div>
-                                                                                <input onChange={handleChange} type="number" id={data.user.userId} className="w-full block p-2.5 z-20 text-sm text-gray-900 bg-gray-50 rounded-s-lg rounded-e-lg border-e-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-e-gray-700  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500" placeholder="Enter amount" required />                                                                            
+                                                                                <div className="mb-2 text-lg font-semibold">{data.name}</div>
+                                                                                <input value={data.amt} onInput={(e) => { handleChange(e, index, 'multiple'); }} type="number" id={data.userId} className="w-full block p-2.5 z-20 text-sm text-gray-900 bg-gray-50 rounded-s-lg rounded-e-lg border-e-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-e-gray-700  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500" placeholder="Enter amount" required />
                                                                             </div>
                                                                         </label>
                                                                     </li>
@@ -204,46 +226,46 @@ export default function AddExpenseModal({ isModalOpen, closeModal, users }) {
                                                         </div>
                                                     </div>
                                                     {buttonVisibility ?
-                                                    <button
-                                    className="m-2 text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                    >
-                                    <svg
-                                        className="me-1 -ms-1 w-5 h-5"
-                                        fill="currentColor"
-                                        viewBox="0 0 20 20"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                        <path
-                                            fillRule="evenodd"
-                                            d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
-                                            clipRule="evenodd"
-                                        ></path>
-                                    </svg>
-                                    Save
-                                </button> : <button
-                                    className="m-2 inline-flex items-center text-white bg-blue-400 dark:bg-blue-500 cursor-not-allowed font-medium rounded-lg text-sm px-5 py-2.5 text-center" disabled
-                                    >
-                                    <svg
-                                        className="me-1 -ms-1 w-5 h-5"
-                                        fill="currentColor"
-                                        viewBox="0 0 20 20"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                        <path
-                                            fillRule="evenodd"
-                                            d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
-                                            clipRule="evenodd"
-                                        ></path>
-                                    </svg>
-                                    Save
-                                </button> } 
+                                                        <button
+                                                            className="m-2 text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                                        >
+                                                            <svg
+                                                                className="me-1 -ms-1 w-5 h-5"
+                                                                fill="currentColor"
+                                                                viewBox="0 0 20 20"
+                                                                xmlns="http://www.w3.org/2000/svg"
+                                                            >
+                                                                <path
+                                                                    fillRule="evenodd"
+                                                                    d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                                                                    clipRule="evenodd"
+                                                                ></path>
+                                                            </svg>
+                                                            Save
+                                                        </button> : <button
+                                                            className="m-2 inline-flex items-center text-white bg-blue-400 dark:bg-blue-500 cursor-not-allowed font-medium rounded-lg text-sm px-5 py-2.5 text-center" disabled
+                                                        >
+                                                            <svg
+                                                                className="me-1 -ms-1 w-5 h-5"
+                                                                fill="currentColor"
+                                                                viewBox="0 0 20 20"
+                                                                xmlns="http://www.w3.org/2000/svg"
+                                                            >
+                                                                <path
+                                                                    fillRule="evenodd"
+                                                                    d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                                                                    clipRule="evenodd"
+                                                                ></path>
+                                                            </svg>
+                                                            Save
+                                                        </button>}
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 )}
 
-                                <button 
+                                <button
                                     onClick={addExpense}
                                     className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                 >

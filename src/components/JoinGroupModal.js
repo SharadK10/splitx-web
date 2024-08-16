@@ -10,7 +10,7 @@ export default function JoinGroupModal({isModalOpen,closeModal}) {
     function joinGroup() {
         console.log("test");
         console.log(groupCode);
-        if(groupCode != '') {
+        if(groupCode !== '') {
             joinGroupApi(groupCode)
             .then((response) => {
                 console.log(response.data);
