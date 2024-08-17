@@ -34,6 +34,7 @@ export default function GroupTransaction() {
             isModalOpen={addExpenseModalState}
             closeModal={closeModal}
             users={users}
+            groupCode= {groupCode}
           />
         }
         <div className="flex flex-row justify-end m-4">

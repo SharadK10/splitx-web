@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const apiClient = axios.create(
     {
-        baseURL: 'https://relative-redfish-civil.ngrok-free.app',
+        baseURL: 'http://localhost:8080',
         headers: {
             'Content-Type': 'application/json',
             "ngrok-skip-browser-warning": "69420",
@@ -31,6 +31,10 @@ export function getGroupTransactions(groupCode) {
 
 export function getGroupUsers(groupCode) {
     return apiClient.get("/api/group/"+groupCode+"/users");
+}
+
+export function addExpenseApi(requestBody) {
+    return apiClient.post("/home/1/add-expense" ,requestBody   );
 }
 
 export function authenticateUserApi() {
