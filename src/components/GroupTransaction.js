@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { getGroupTransactions, getGroupUsers } from "./Api";
 import AddExpenseModal from "./AddExpenseModal";
+import { SingleExpenseCard } from "./SingleExpenseCard";
 export default function GroupTransaction() {
     const location = useLocation();
     const groupCode = location.pathname.split('/')[2];
@@ -55,7 +56,7 @@ export default function GroupTransaction() {
           </p>
           <ul class="my-4 space-y-3 h-96 overflow-y-scroll">
           {transactions.map((transaction) => (
-              <div>{transaction.transactionDescription}</div>
+              <SingleExpenseCard expense={transaction}/>
            
             ))}
             

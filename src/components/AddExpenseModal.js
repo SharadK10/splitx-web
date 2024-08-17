@@ -18,16 +18,7 @@ export default function AddExpenseModal({ isModalOpen, closeModal, users, groupC
 
     function addExpense() {
         console.log("Add Expense");
-        // {
-        //     "groupCode" : "XXX",
-        //     "userId_0" : 1,
-        //     "userSpent_0": 200,
-        //     "userShare_0" :100,
-        //     "userId_1" : 2,
-        //     "userSpent_1" : 100,
-        //     "userShare_1" : 200,
-        //     "description" : "firstTxn"
-        // }
+        
         var requestJson = {};
         requestJson["groupCode"] = groupCode;
         requestJson["description"] = description;
@@ -36,7 +27,7 @@ export default function AddExpenseModal({ isModalOpen, closeModal, users, groupC
             requestJson["userSpent_"+index] = data.spend;
             requestJson["userShare_"+index] = data.share;
         });
-        
+        console.log("Request Body: " + requestJson);
         addExpenseApi(requestJson).then((response) => {
             console.log(response);
         }).catch((error) => {console.error(error);})
