@@ -25,6 +25,11 @@
   color: #61dafb;
 }
 
+.react-card-flip {
+  width : 96%;
+  max-width: 32rem;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

@@ -3,19 +3,31 @@ import { useLocation } from "react-router-dom";
 import { getGroupTransactions, getGroupUsers } from "./Api";
 import AddExpenseModal from "./AddExpenseModal";
 import { SingleExpenseCard } from "./SingleExpenseCard";
+import ReactCardFlip from 'react-card-flip';
+
 import {
   prepareUIPerspectiveResponse,
   simplifyExpenseAlgo,
 } from "../service/simplifyExpenseAlgo";
+import SimplifiedExpenseComponent from "./SimplifiedExpenseComponent";
 export default function GroupTransaction() {
   const location = useLocation();
   const groupCode = location.pathname.split("/")[2];
   const [transactions, setTransactions] = useState([]);
   const [users, setUsers] = useState([]);
   const [addExpenseModalState, setAddExpenseModalState] = useState(false);
+  const [simplifiedExpenseState, setSimplifiedExpenseState] = useState(false);
+  const [allSettlements, setAllSettlements] = useState([]);
+  const [isFlipped,setIsFlipped] = useState(false);
 
   const openModal = () => setAddExpenseModalState(true);
   const closeModal = () => setAddExpenseModalState(false);
+
+  const toggleSimplifiedExpense = () => {
+    setSimplifiedExpenseState(!simplifiedExpenseState);
+    setIsFlipped(!isFlipped);
+  }
+ 
 
   const fetchData = async () => {
     try {
@@ -25,16 +37,13 @@ export default function GroupTransaction() {
       const user = response.data;      
       await getGroupTransactions(groupCode).then((response) => {
         setTransactions(response.data.transaction);
-        console.log("response:", response);
         const transaction = response.data.transaction;
-        console.log("transaction:", transaction);
 
         //calclulate newPay for each person
         const repayments = transaction.map((data) => {
           return data.repayments;
         });
 
-        console.log("repayments", repayments);
 
         const netPayments = {};
 
@@ -54,20 +63,15 @@ export default function GroupTransaction() {
             allRepayemnts.push(d);
           });
         });
-        console.log("allRepayemnts", allRepayemnts);
 
         allRepayemnts.map((data) => {
           addPayments(data.from.userId, data.from, -1 * data.amount);
           addPayments(data.to.userId, data.to, data.amount);
         });
-
-        console.log("netPayments", netPayments);
+        
         const result = simplifyExpenseAlgo(netPayments);
-        console.log("result:-", result);
-        console.log("users:-", user);
-
         const result2 = prepareUIPerspectiveResponse(result, user);
-        console.log("result2:-", result2);
+        setAllSettlements(result2);
       });
       console.log(groupCode);
     } catch (error) {
@@ -78,17 +82,15 @@ export default function GroupTransaction() {
   useEffect(() => {
     fetchData();
   }, []);
+  console.log("allSettlements1", allSettlements);
+
+
+
+
+
 
   return (
-    <>
-      {users.length !== 0 && (
-        <AddExpenseModal
-          isModalOpen={addExpenseModalState}
-          closeModal={closeModal}
-          users={users}
-          groupCode={groupCode}
-        />
-      )}
+  <>
       <div className="flex flex-row justify-end m-4">
         <button
           onClick={openModal}
@@ -97,20 +99,42 @@ export default function GroupTransaction() {
         >
           Add Expense
         </button>
+        <button
+          onClick={toggleSimplifiedExpense}
+          className="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          type="button"
+        >
+            {simplifiedExpenseState ? ("Group Expense") : ("Simplified Settlemets")}
+        </button>
+        
       </div>
-      <div class="w-full max-w-lg p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-gray-800 dark:border-gray-700">
-        <h5 class="mb-3 text-base font-semibold text-gray-900 md:text-xl dark:text-white">
+      {users.length !== 0 && (
+        <AddExpenseModal
+          isModalOpen={addExpenseModalState}
+          closeModal={closeModal}
+          users={users}
+          groupCode={groupCode}
+        />
+      )}
+      <ReactCardFlip isFlipped={isFlipped} flipDirection="horizontal">
+      <div className="w-full max-w-lg p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-gray-800 dark:border-gray-700">
+        <h5 className="mb-3 text-base font-semibold text-gray-900 md:text-xl dark:text-white">
           Group Expenses
         </h5>
-        <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-          Recent transactions
-        </p>
-        <ul class="my-4 space-y-3 h-96 overflow-y-scroll">
-          {transactions.map((transaction) => (
-            <SingleExpenseCard expense={transaction} />
-          ))}
-        </ul>
+       <p className="text-sm font-normal text-gray-500 dark:text-gray-400">
+        Recent transactions
+      </p>
+      <ul className="my-4 space-y-3 h-96 overflow-y-scroll">
+        {transactions.map((transaction) => (
+          <SingleExpenseCard key={transaction.id} expense={transaction} />
+        ))}
+      </ul>
       </div>
+
+      <SimplifiedExpenseComponent
+        allSettlements={allSettlements}
+      />
+    </ReactCardFlip>
     </>
   );
 }

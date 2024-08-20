@@ -4,12 +4,14 @@ import './App.css';
 import Header from './components/Header';
 import ListGroups from './components/ListGroups';
 import GroupTransaction from './components/GroupTransaction';
+import LoginComponent from './components/LoginComponent';
 
 function App() {
   return (
     <div className="App flex flex-col justify-center items-center">
       <Header/>
       <Routes>
+        <Route path='/login' element={<LoginComponent />} />
       <Route path='/groups' element={<ListGroups />} /> 
       <Route path='/groups/:groupCode' element={ <GroupTransaction  />} /> 
       </Routes>

@@ -47,34 +47,38 @@ function simplifyExpenseAlgo(balanceMap) {
 }
 
 function prepareUIPerspectiveResponse(simplifiedRepayemts,usersArray) {
-    console.log("usersArray",usersArray);
-    
-    let userMap = {};
+    // console.log("usersArray", usersArray);
+    let userMap = [];
     usersArray.map((user) => {
-        userMap[user.user.userId] = {
+        userMap.push({
             mainUser : user.user,
             transactionAmount : [] 
-        };
+        });
     });
-
-    console.log(userMap);
-    
+    // console.log("userMap", userMap);
     simplifiedRepayemts.map((data) => {
-        userMap[data.fromUser.userId].transactionAmount.push(
-            {
-                userObj : data.toUser,
-                amount : data.amount,
-                giveOrTake : "give"
-            });
-            
-        userMap[data.toUser.userId].transactionAmount.push(
-            {
-                    userObj : data.fromUser,
-                    amount : data.amount,
-                    giveOrTake : "take"
-            });
+        userMap.map((user) => {
+            if(user.mainUser.userId === data.fromUser.userId) {
+                user.transactionAmount.push(
+                        {
+                            userObj : data.toUser,
+                            amount : data.amount,
+                            giveOrTake : "give"
+                        });
+            }
+            if(user.mainUser.userId === data.toUser.userId) {
+                user.transactionAmount.push(
+                        {
+                            userObj : data.fromUser,
+                            amount : data.amount,
+                            giveOrTake : "take"
+                        });
+            }
+        })
+        
 
     })
+    // console.log("userMap2", userMap);
     return userMap;
 
 } 
