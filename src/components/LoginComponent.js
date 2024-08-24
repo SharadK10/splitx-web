@@ -1,6 +1,7 @@
 export default function LoginComponent() {
-    function handleLogin(){
+    const googleLogin = () => {
         console.log("login clicked");
+        window.location.href = "http://localhost:8080/oauth2/authorization/google"
     }
 
     return (
@@ -14,7 +15,7 @@ export default function LoginComponent() {
               <h1 class="flex flex-row items-center justify-center text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                   Sign in to your account
               </h1>
-              <button class="bg-white border py-2 w-full rounded-xl mt-5 flex justify-center text-sm" onClick={handleLogin}>
+              <button class="bg-white border py-2 w-full rounded-xl mt-5 flex justify-center text-sm" onClick={googleLogin}>
                 <img class="w-6 mr-3" src="./google.png" alt=""/>                
                 Login with Google
             </button>
