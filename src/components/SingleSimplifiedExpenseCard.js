@@ -15,7 +15,6 @@ export function SingleSimplifiedExpenseCard({ settlement }) {
                     return <li className = "text-red-600 whitespace-normal">{settlement.mainUser.name} will give {data.amount} to {data.userObj.name}</li>
                   }
                   return  <li className = "text-green-500 whitespace-normal">{settlement.mainUser.name} will get {data.amount} from {data.userObj.name}</li>
-                
                 })}
               
             </ul>

@@ -32,6 +32,7 @@ export default function GroupTransaction() {
   const fetchData = async () => {
     try {
       // Fetch group users
+      // const userDetail = 
       const response = await getGroupUsers(groupCode);
       setUsers(response.data);
       const user = response.data;      
@@ -77,16 +78,13 @@ export default function GroupTransaction() {
     } catch (error) {
       console.error("Error fetching data:", error);
     }
+
   };
 
   useEffect(() => {
     fetchData();
   }, []);
   console.log("allSettlements1", allSettlements);
-
-
-
-
 
 
   return (

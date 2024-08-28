@@ -1,5 +1,18 @@
+import { logout } from "./Api";
 export default function Header() {
-    return (
+
+  function handleClick() {
+    logout().then(response => {
+      console.log(response);
+      if (response.status === 200) {
+          window.location.href = '/login?logout';
+      };
+  }).catch((error) => {
+    console.log(error);
+  })
+  } 
+  
+  return (
 
 
 <nav class="bg-white border-gray-200 dark:bg-gray-900 w-full">
@@ -29,6 +42,8 @@ export default function Header() {
       </li>
     </ul>
   </div>
+    <button onClick={handleClick}>logout</button>
+
   </div>
 </nav>
 

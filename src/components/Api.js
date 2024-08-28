@@ -1,14 +1,14 @@
 import axios from 'axios';
 
 
-const apiClient = axios.create(
+export const apiClient = axios.create(
     {
         baseURL: 'http://localhost:8080',
         headers: {
             'Content-Type': 'application/json',
             "ngrok-skip-browser-warning": "69420",
           },
-        
+          withCredentials : true
     },
     
 );
@@ -39,4 +39,8 @@ export function addExpenseApi(requestBody) {
 
 export function authenticateUserApi() {
     return apiClient.get("/api/user/");
+}
+
+export function logout() {
+    return apiClient.post("/logout");
 }
