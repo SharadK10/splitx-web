@@ -1,5 +1,4 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-
 // Create the AuthContext
 export const AuthContext = createContext();
 
@@ -24,7 +23,6 @@ export const AuthProvider = ({ children }) => {
     const login = () => {
         setIsAuthenticated(true);
         localStorage.setItem('isAuthenticated', 'true');
-        window.open("/groups", true);
     };
 
     // Method to log out
