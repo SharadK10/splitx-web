@@ -14,15 +14,16 @@ export const apiClient = axios.create(
 );
 
 export function retriveAllGroupsApi() {
-    return apiClient.get("/home/1");
+    return apiClient.get("/api/get-groups");
 }
 
 export function createGroupApi(groupName) {
-    return apiClient.post("/home/1/create-group", {groupName:groupName})
+    return apiClient.post("/api/create-group", {groupName:groupName})
 }
 
 export function joinGroupApi(groupCode) {
-    return apiClient.post("/home/1/join-group", {groupCode:groupCode})
+    console.log(groupCode);
+    return apiClient.post("/api/join-group", {groupCode:groupCode})
 }
 
 export function getGroupTransactions(groupCode) {
@@ -34,7 +35,7 @@ export function getGroupUsers(groupCode) {
 }
 
 export function addExpenseApi(requestBody) {
-    return apiClient.post("/home/1/add-expense" ,requestBody   );
+    return apiClient.post("/api/add-expense" ,requestBody   );
 }
 
 export function authenticateUserApi() {
@@ -44,3 +45,4 @@ export function authenticateUserApi() {
 export function logout() {
     return apiClient.post("/logout");
 }
+

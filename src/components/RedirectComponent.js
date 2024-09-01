@@ -1,15 +1,20 @@
 import { useEffect  } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "./AuthContext";
-export function RedirectComponent() {
 
+
+
+export function RedirectComponent() {
+    const navigate = useNavigate();
     const {login} = useAuth();
 
     const location = useLocation();
 
     useEffect(() => {
-        console.log("loggedIn");
         login();
+        const redirectAfterLogin = localStorage.getItem('redirectAfterLogin') || '/groups';
+        localStorage.removeItem('redirectAfterLogin'); // Clear the stored URL
+        navigate(redirectAfterLogin, { replace: true });
     }, []);
 
 
