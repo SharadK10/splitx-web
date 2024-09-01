@@ -24,7 +24,39 @@ export default function ListGroups() {
   useEffect(() => getGroups(), [createModalState, joinModalState]);
 
   function getGroups() {
-    retriveAllGroupsApi().then((response) => setGroups(response.data));
+    console.log("hit");
+    retriveAllGroupsApi().then((response) => {
+      const groupList = response.data;
+      console.log(groupList);
+
+      function sortByDate(groupList, getDate) {
+        return groupList.sort((a, b) => {
+          const date1 = getDate(a);
+          const date2 = getDate(b);
+          return date2 - date1;
+        });
+      }
+
+      const sortedGroupList = sortByDate(groupList, (group) => {
+        if (group.transaction.length === 0) {
+            return new Date(group.groupCreateDate);
+        }
+        let maxDate = -Infinity;
+        for (const txn of group.transaction) {
+            var createdDate;
+            if(txn.createdDate === null) {
+              createdDate = -Infinity;
+            } else {
+              createdDate = new Date(txn.createdDate);
+            }
+            const updatedDate = txn.updatedDate ? new Date(txn.updatedDate) : new Date(txn.createdDate);
+            
+            maxDate = Math.max(maxDate, createdDate, updatedDate);
+        }
+        return maxDate;
+    });
+      setGroups(sortedGroupList)
+  });
   }
 
   return (
@@ -63,47 +95,10 @@ export default function ListGroups() {
           </p>
           <ul class="my-4 space-y-3 h-96 overflow-y-scroll">
           {groups.map((group) => (
-              // <div>
-              //   {group.id},{group.groupName}
-              // </div><
               <SingleGroupCard group={group}/>
-            //   <li>
-            //   <a
-            //     href="#"
-            //     class="flex items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-gray-50 hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white"
-            //   >
-            //     <span class="flex-1 ms-3 whitespace-nowrap">{group.groupName}</span>
-            //     {/* <span class="inline-flex items-center justify-center px-2 py-0.5 ms-3 text-xs font-medium text-gray-500 bg-gray-200 rounded dark:bg-gray-700 dark:text-gray-400">
-            //       Popular
-            //     </span> */}
-            //   </a>
-            // </li>
             ))}
             
           </ul>
-          {/* <div>
-            <a
-              href="#"
-              class="inline-flex items-center text-xs font-normal text-gray-500 hover:underline dark:text-gray-400"
-            >
-              <svg
-                class="w-3 h-3 me-2"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M7.529 7.988a2.502 2.502 0 0 1 5 .191A2.441 2.441 0 0 1 10 10.582V12m-.01 3.008H10M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                />
-              </svg>
-              Why?
-            </a>
-          </div> */}
         </div>
     </>
   );

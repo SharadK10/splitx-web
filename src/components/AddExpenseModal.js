@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { addExpenseApi } from './Api';
 export default function AddExpenseModal({ isModalOpen, closeModal, users, groupCode }) {
     const [description, setDescription] = useState('');
@@ -28,6 +28,7 @@ export default function AddExpenseModal({ isModalOpen, closeModal, users, groupC
         });
         console.log("Request Body: " + requestJson);
         addExpenseApi(requestJson).then((response) => {
+            closeModal();
             console.log(response);
         }).catch((error) => {
             console.error(error);
@@ -252,7 +253,7 @@ export default function AddExpenseModal({ isModalOpen, closeModal, users, groupC
                                                     {buttonVisibility ?
                                                         <button
                                                             className="m-2 text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                                        >
+                                                        onClick={togglePayerModal}>
                                                             <svg
                                                                 className="me-1 -ms-1 w-5 h-5"
                                                                 fill="currentColor"
@@ -330,7 +331,7 @@ export default function AddExpenseModal({ isModalOpen, closeModal, users, groupC
                                                     {buttonVisibility ?
                                                         <button
                                                             className="m-2 text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                                        >
+                                                        onClick={toggleShareModal}>
                                                             <svg
                                                                 className="me-1 -ms-1 w-5 h-5"
                                                                 fill="currentColor"

@@ -14,7 +14,7 @@ export const apiClient = axios.create(
 );
 
 export function retriveAllGroupsApi() {
-    return apiClient.get("/home/1");
+    return apiClient.get("/api/groups");
 }
 
 export function createGroupApi(groupName) {

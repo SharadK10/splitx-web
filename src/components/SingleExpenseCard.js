@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 
-export function SingleExpenseCard({expense}) {
+export function SingleExpenseCard({expense, sendExpenseDetails}) {
     const [owed, setOwed] = useState(0);
-    const groupUrl = "#"
+
     useEffect(()=>{
         expense.userTransactions.map((txn) => {
             if(txn.user.userId === 1) {
@@ -10,18 +10,24 @@ export function SingleExpenseCard({expense}) {
             }
         })
     }, [])
-    console.log("owed: " +owed);
+
+    function handleExpenseDetailsToggle() {
+      console.log("expense", expense);
+      sendExpenseDetails(expense);
+    }
+
   return (
+    <>
     <li>
       <div class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-secondary-foreground hover:bg-secondary/80 px-4 h-fit w-full py-3 rounded-lg border bg-card shadow-sm text-base">
         <div class="w-full flex flex-col gap-1">
           <div class="text-base flex gap-2 justify-between">
-            <a
-              class="flex-1 overflow-hidden text-ellipsis"
-              href={groupUrl}
+            <button
+              class="flex flex-1 overflow-hidden text-ellipsis"
+              onClick={handleExpenseDetailsToggle}
             >
               {expense.transactionDescription}
-            </a>
+            </button>
             {owed > 0 &&
             <div className="flex flex-col justify-center items-center text-green-500">
                 <div>You Lent</div>
@@ -130,5 +136,6 @@ export function SingleExpenseCard({expense}) {
         </div>
       </div>
     </li>
+    </>
   );
 }

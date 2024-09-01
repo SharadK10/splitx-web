@@ -1,51 +1,77 @@
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { logout } from "./Api";
+import { useAuth } from "./AuthContext";
+
 export default function Header() {
+  const authContext = useAuth();
+  const location = useLocation();
+  const [authStatus, setAuthStatus] = useState(false);
 
-  function handleClick() {
-    logout().then(response => {
-      console.log(response);
+  async function handleClick() {
+    try {
+      const response = await logout();
       if (response.status === 200) {
-          window.location.href = '/login?logout';
-      };
-  }).catch((error) => {
-    console.log(error);
-  })
-  } 
-  
+        window.location.href = '/login?logout';
+      }
+    } catch (error) {
+      console.error(error);
+      alert("An error occurred while logging out. Please try again.");
+    }
+  }
+
+  useEffect(() => {
+    setAuthStatus(authContext.isAuthenticated);
+  }, [authContext.isAuthenticated]);
+
+  const isActive = (path) => location.pathname === path;
+
   return (
-
-
-<nav class="bg-white border-gray-200 dark:bg-gray-900 w-full">
-  <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-  <a href="" class="flex items-center space-x-3 rtl:space-x-reverse">
-      <img src="https://flowbite.com/docs/images/logo.svg" class="h-8" alt="Flowbite Logo" />
-      <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">SplitX</span>
-  </a>
-  <div class="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-      <button type="button" class="flex text-sm bg-gray-800 rounded-full md:me-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600" id="user-menu-button" aria-expanded="false" data-dropdown-toggle="user-dropdown" data-dropdown-placement="bottom">
-        <span class="sr-only">Open user menu</span>
-      </button>
-      <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600" id="user-dropdown">
-        <div class="px-4 py-3">
-          <span class="block text-sm text-gray-900 dark:text-white">Bonnie Green</span>
-          <span class="block text-sm  text-gray-500 truncate dark:text-gray-400">name@flowbite.com</span>
+    <nav className="bg-white border-gray-200 dark:bg-gray-900 w-full max-w-screen-md mx-auto">
+      <div className="flex items-center justify-between p-4">
+        <a href="/" className="flex items-center space-x-3 rtl:space-x-reverse">
+          <img src="https://flowbite.com/docs/images/logo.svg" className="h-8" alt="SplitX Logo" />
+          <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">SplitX</span>
+        </a>
+        
+        <div className="flex-1 flex justify-center">
+          <ul className="flex space-x-4">
+            <li>
+              <a
+                href="/"
+                className={`block py-2 px-3 rounded md:p-0 ${
+                  isActive('/') 
+                    ? 'text-blue-700' 
+                    : 'text-gray-900 hover:bg-gray-100 md:hover:bg-transparent dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent'
+                }`}
+                aria-current={isActive('/') ? 'page' : undefined}
+              >
+                Home
+              </a>
+            </li>
+            <li>
+              <a
+                href="/groups"
+                className={`block py-2 px-3 rounded md:p-0 ${
+                  isActive('/groups') 
+                    ? 'text-blue-700' 
+                    : 'text-gray-900 hover:bg-gray-100 md:hover:bg-transparent dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent'
+                }`}
+                aria-current={isActive('/groups') ? 'page' : undefined}
+              >
+                Groups
+              </a>
+            </li>
+          </ul>
         </div>
+        {authStatus &&
+        <button
+          onClick={handleClick}
+          className="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-4 py-2"
+        >
+          Logout
+        </button>}
       </div>
-  </div>
-  <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-user">
-    <ul class="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
-      <li>
-        <a href="/" class="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500" aria-current="page">Home</a>
-      </li>
-      <li>
-        <a href="/groups" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Groups</a>
-      </li>
-    </ul>
-  </div>
-    <button onClick={handleClick}>logout</button>
-
-  </div>
-</nav>
-
-    )
+    </nav>
+  );
 }
