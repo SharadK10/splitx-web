@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
+import { useAuth } from "./AuthContext";
 
 export function SingleExpenseCard({expense, sendExpenseDetails}) {
     const [owed, setOwed] = useState(0);
 
+    const user = useAuth().user;
+
     useEffect(()=>{
         expense.userTransactions.map((txn) => {
-            if(txn.user.userId === 1) {
+            if(txn.user.userId === user.userId) {
                 setOwed(parseInt(txn.spent) - parseInt(txn.myShare));
             }
         })
@@ -46,22 +49,6 @@ export function SingleExpenseCard({expense, sendExpenseDetails}) {
             </div>
             }
             <span class="flex-shrink-0">
-              <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 w-10 -my-3 -ml-3 -mr-1.5">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  class="w-4 h-4 text-muted-foreground"
-                >
-                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                </svg>
-              </button>
               <button
                 class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 w-10 -my-3 -mr-3 -ml-1.5"
                 type="button"
@@ -91,26 +78,6 @@ export function SingleExpenseCard({expense, sendExpenseDetails}) {
           </div>
           <div class="text-muted-foreground font-normal text-xs">
             <div class="w-full flex items-center justify-between">
-              {/* <div class="flex items-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  class="w-3 h-3 inline mr-1"
-                >
-                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
-                  <circle cx="9" cy="7" r="4"></circle>
-                  <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
-                  <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                </svg>
-                <span>3</span>
-              </div> */}
               <div class="flex items-center">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

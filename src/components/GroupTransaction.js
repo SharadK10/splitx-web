@@ -41,10 +41,9 @@ export default function GroupTransaction() {
   } 
 
   const handleExpenseDetails = (details) => {
-    console.log("details", details);
     setExpenseDetails(details);
-    console.log("here",expenseDetails);
   }
+
 
 
   const fetchData = async () => {
@@ -55,7 +54,21 @@ export default function GroupTransaction() {
       setUsers(response.data);
       const user = response.data;
       await getGroupTransactions(groupCode).then((response) => {
-        setTransactions(response.data.transaction);
+        console.log(response.data);
+        const txnList = response.data.transaction;
+        
+        function sortByDate(txnList, getDate) {
+          return txnList.sort((a, b) => {
+            const date1 = getDate(a);
+            const date2 = getDate(b);
+            return date2 - date1;
+          });
+        }
+  
+        const sortedTxnList = sortByDate(txnList, (txn) => {
+               return txn.updatedDate ? new Date(txn.updatedDate) : new Date(txn.createdDate);
+        });
+        setTransactions(sortedTxnList);
         const transaction = response.data.transaction;
 
         const repayments = transaction.map((data) => {
@@ -89,16 +102,14 @@ export default function GroupTransaction() {
         const result = simplifyExpenseAlgo(netPayments);
         const result2 = prepareUIPerspectiveResponse(result, user);
         setAllSettlements(result2);
-      });
-      console.log(groupCode);
-    } catch (error) {
+  })}
+     catch (error) {
       console.error("Error fetching data:", error);
     }
   };
 
   useEffect(() => {
     if(expenseDetails != null) {
-      console.log("fsd",expenseDetails);
       toggleExpenseDetailsModal();
     }
   },[expenseDetails])

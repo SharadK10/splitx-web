@@ -1,4 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
+import { getUserDetailsApi } from './Api';
 // Create the AuthContext
 export const AuthContext = createContext();
 
@@ -8,13 +9,17 @@ export const useAuth = () => useContext(AuthContext);
 export const AuthProvider = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [loading, setLoading] = useState(true); // New loading state
+    const [user, setUser] = useState(null);
 
     useEffect(() => {
         const authStatus = localStorage.getItem('isAuthenticated');
         console.log(authStatus);
         if (authStatus === 'true') {
           setIsAuthenticated(true);
-        }
+           getUserDetailsApi().then((res) => {
+            setUser(res.data);
+          }).catch((err) => console.log(err))
+          }
         setLoading(false);
       }, []);
     // const [sessionId, setSessionId] = useState(null);
@@ -28,12 +33,11 @@ export const AuthProvider = ({ children }) => {
     // Method to log out
     const logout = () => {
         setIsAuthenticated(false);
+        setUser(null);
         localStorage.removeItem('isAuthenticated', 'true');
     };
-
-
     return (
-        <AuthContext.Provider value={{ isAuthenticated, login, logout , loading}}>
+        <AuthContext.Provider value={{ isAuthenticated, user, login, logout , loading}}>
             {children}
         </AuthContext.Provider>
     );

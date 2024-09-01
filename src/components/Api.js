@@ -38,6 +38,10 @@ export function addExpenseApi(requestBody) {
     return apiClient.post("/api/add-expense" ,requestBody   );
 }
 
+export function getUserDetailsApi() {
+    return apiClient.get("/api/get-user-details");
+}
+
 export function authenticateUserApi() {
     return apiClient.get("/api/user/");
 }
