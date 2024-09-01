@@ -13,6 +13,25 @@ export const apiClient = axios.create(
     
 );
 
+
+// Add a response interceptor
+apiClient.interceptors.response.use(
+    (response) => {
+        // Return the response directly if it's successful
+        return response;
+    },
+    (error) => {
+        // Check if the error response status is 401 or 403
+        localStorage.removeItem('isAuthenticated', 'true');
+        localStorage.removeItem('userDetails');
+        // if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+        // }
+        // Return the error to the next catch block
+        return Promise.reject(error);
+    }
+);
+
+
 export function retriveAllGroupsApi() {
     return apiClient.get("/api/get-groups");
 }

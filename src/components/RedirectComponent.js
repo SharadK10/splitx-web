@@ -11,10 +11,18 @@ export function RedirectComponent() {
     const location = useLocation();
 
     useEffect(() => {
-        login();
+        login()
+    .then(() => {
+        console.log('User logged in successfully');
         const redirectAfterLogin = localStorage.getItem('redirectAfterLogin') || '/groups';
         localStorage.removeItem('redirectAfterLogin'); // Clear the stored URL
         navigate(redirectAfterLogin, { replace: true });
+    })
+    .catch((error) => {
+        console.error('Error logging in:', error);
+        // Handle the error (show error message, etc.)
+    });
+    
     }, []);
 
 

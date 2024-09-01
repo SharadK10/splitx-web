@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { logout } from "./Api";
 import { useAuth } from "./AuthContext";
+import { Popover } from 'flowbite';
 
 export default function Header() {
-  const authContext = useAuth();
   const location = useLocation();
   const [authStatus, setAuthStatus] = useState(false);
+  const {user,isAuthenticated} = useAuth();
 
   async function handleClick() {
     try {
@@ -21,8 +22,46 @@ export default function Header() {
   }
 
   useEffect(() => {
-    setAuthStatus(authContext.isAuthenticated);
-  }, [authContext.isAuthenticated]);
+    setAuthStatus(isAuthenticated);
+  }, [isAuthenticated]);
+
+  useEffect(() => {
+    const initializePopover = () => {
+      const $targetElpopover = document.getElementById("popover-user-profile");
+      const $triggerElpopover = document.getElementById("popoverButton");
+
+      if ($targetElpopover && $triggerElpopover) {
+        const optionspopover = {
+          placement: 'bottom',
+          triggerType: 'hover',
+          offset: 10,
+          onHide: () => console.log('popover is hidden'),
+          onShow: () => console.log('popover is shown'),
+          onToggle: () => console.log('popover is toggled'),
+        };
+
+        const instanceOptionspopover = {
+          id: 'popoverContent',
+          override: true
+        };
+
+        // Initialize the popover
+        const popover = new Popover($targetElpopover, $triggerElpopover, optionspopover, instanceOptionspopover);
+
+        // Clean up function
+        return () => {
+          // If no destroy method, hide or toggle the popover if necessary
+          if (popover.isVisible()) {
+            popover.hide();
+          }
+          // If necessary, handle additional cleanup here
+        };
+      }
+    };
+
+    const timer = setTimeout(initializePopover, 500); // Delay of 100ms
+    return () => clearTimeout(timer);
+  }, []);
 
   const isActive = (path) => location.pathname === path;
 
@@ -64,13 +103,46 @@ export default function Header() {
             </li>
           </ul>
         </div>
-        {authStatus &&
-        <button
-          onClick={handleClick}
-          className="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-4 py-2"
-        >
-          Logout
-        </button>}
+        
+        {authStatus && user && (
+          <>
+            <button
+              id="popoverButton"
+              type="button"
+              className="text-white  font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            >
+                  <a href="#">
+                    <img
+                      className="w-8 h-8 rounded-full"
+                      src={user.photo}
+                      alt="User Profile"
+                    />
+                  </a>
+            </button>
+
+            <div
+              id = "popover-user-profile"
+              role="tooltip"
+              className="absolute z-10 invisible inline-block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 dark:text-gray-400 dark:bg-gray-800 dark:border-gray-600"
+            >
+              <div className="p-3">
+                <p className="text-base font-semibold leading-none text-gray-900 dark:text-white">
+                  <a href="#">{user.name}</a>
+                </p>
+                <p className="mb-3 text-sm font-normal">
+                  <a href="#" className="hover:underline">{user.email}</a>
+                </p>
+                <button
+                  onClick={handleClick}
+                  className="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-4 py-2"
+                >
+                  Logout
+                </button>
+              </div>
+              <div data-popper-arrow></div>
+            </div>
+          </>
+        )}
       </div>
     </nav>
   );

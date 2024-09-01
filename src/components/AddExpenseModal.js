@@ -1,11 +1,28 @@
 import React, { useState } from 'react';
 import { addExpenseApi } from './Api';
+import { useAuth } from './AuthContext';
+
 export default function AddExpenseModal({ isModalOpen, closeModal, users, groupCode }) {
     const [description, setDescription] = useState('');
     const [amount, setAmount] = useState(0);
     const [payerModal, setPayerModal] = useState(false);
     const [shareModal, setShareModal] = useState(false);
     const [openAccordionItem, setOpenAccordionItem] = useState(null);
+    const [buttonVisibility, setButtonVisibility] = useState(false)
+    const [shareSaveButtonVisibility,setShareSaveButtonVisibility] = useState(true);
+    const {user} = useAuth();
+
+    const [payerDetails, setPayerDetails] = useState(() => {
+        const userDetail = users.find(u => u.user.userId === user.userId);
+        return userDetail ? {
+            id: userDetail.user.userId,
+            name: userDetail.user.name,
+            spend: 0,
+            share: null
+        } : {};
+    });
+    
+    
     const [usersExpense, setUsersExpense] = useState(() => users.map(u => ({
         id: u.user.userId,
         name: u.user.name,
@@ -13,26 +30,37 @@ export default function AddExpenseModal({ isModalOpen, closeModal, users, groupC
         share: null
     })));
 
-    const [buttonVisibility, setButtonVisibility] = useState(false)
 
-    function addExpense() {
-        console.log("Add Expense");
-        
+    function addExpense() {     
         var requestJson = {};
         requestJson["groupCode"] = groupCode;
         requestJson["description"] = description;
         usersExpense.map((data,index) => {
             requestJson["userId_"+index] = data.id;
-            requestJson["userSpent_"+index] = data.spend;
-            requestJson["userShare_"+index] = data.share;
+            requestJson["userSpent_"+index] = (data.spend == null)?0:data.spend;
+            requestJson["userShare_"+index] = (data.share == null)?0:data.share;
         });
-        console.log("Request Body: " + requestJson);
-        addExpenseApi(requestJson).then((response) => {
-            closeModal();
-            console.log(response);
-        }).catch((error) => {
-            console.error(error);
-        })
+        const totalSpendSum = usersExpense.reduce((sum, item) => sum + item.share, 0);
+        const totalShareSum = usersExpense.reduce((sum, item) => sum + item.spend, 0);
+        console.log("totalShareSum",totalShareSum);
+        console.log("totalSPend",totalSpendSum);
+        console.log("amount",amount);
+        
+        if(totalShareSum === parseFloat(amount) && totalSpendSum === parseFloat(amount)) {
+            addExpenseApi(requestJson).then((response) => {
+                closeModal();
+                console.log(response);
+            }).catch((error) => {
+                console.error(error);
+            })
+        } else {
+            if(totalShareSum !== amount) 
+                alert("Sum of indivdual person share must be equal to amount you mentioned");
+            else if(totalSpendSum !== amount)
+                alert("Sum of indivdual person spent must be equal to amount you mentioned");
+
+        }
+      
     }
 
     function togglePayerModal() {
@@ -49,37 +77,50 @@ export default function AddExpenseModal({ isModalOpen, closeModal, users, groupC
     
     function handleChange(e, index, type) {
         if(type === 'multiple'){
-            const updatedItems = usersExpense.map((u, i) =>
-                i === index ? { ...u, spend: parseInt(e.target.value) } : u
-            );
+            const payerDetailsArray = [];
+            const updatedItems = usersExpense.map((u, i) => {
+                const updatedUser = (i === index) ? { ...u, spend: parseFloat(e.target.value) } : { ...u };
+                  payerDetailsArray.push(updatedUser);
+                return updatedUser;
+              });
+            setPayerDetails(payerDetailsArray);
             setUsersExpense(updatedItems);
             const totalSum = updatedItems.reduce((sum, item) => sum + item.spend, 0);
-    
-            if (totalSum === parseInt(amount)) {
+            if (totalSum === parseFloat(amount)) {
                 setButtonVisibility(true);
             } else {
                 setButtonVisibility(false);
             }
         } else if(type === 'single'){
-         
-            const updatedItems = usersExpense.map((u, i) =>
-                i === index ? { ...u, spend: parseInt(e.target.value) } : { ...u, spend:0 }
-            );
+            const updatedItems = usersExpense.map((u, i) => {
+                const updatedUser = i === index ? { ...u, spend: parseFloat(e.target.value) } : { ...u, spend: 0 };
+                if (i === index) {
+                  setPayerDetails(updatedUser);
+                }
+                return updatedUser;
+              });
+            console.log(payerDetails);
+            
             setUsersExpense(updatedItems);
-
             setButtonVisibility(true);
         }
     }
 
 
-    function handleShareAmount(e, index, type) {
+    function handleShareAmount(e, index) {
             const updatedItems = usersExpense.map((u, i) =>
-                i === index ? { ...u, share: parseInt(e.target.value) } : u
+                i === index ? { ...u, share: parseFloat(e.target.value) } : u
             );
             setUsersExpense(updatedItems);
-    }
-    console.log("usersExpense", usersExpense);
-    
+            const totalSum = updatedItems.reduce((sum, item) => sum + item.share, 0);
+            if (totalSum === parseFloat(amount)) {
+                setShareSaveButtonVisibility(true);
+            } else {
+                setShareSaveButtonVisibility(false);
+            }
+    }   
+
+
     return (
         <>
             {isModalOpen && (
@@ -89,7 +130,7 @@ export default function AddExpenseModal({ isModalOpen, closeModal, users, groupC
                     aria-hidden="true"
                     className="fixed inset-0 z-50 overflow-y-auto overflow-x-hidden flex items-center justify-center w-full h-[calc(100%-1rem)] max-h-full"
                 >
-                    <div className="relative p-4 w-full max-w-md max-h-full">
+                    <div className="relative w-full max-w-md max-h-full rounded-lg bg-white shadow-lg shadow-red-950/10">
                         <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
                             <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
                                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
@@ -150,13 +191,18 @@ export default function AddExpenseModal({ isModalOpen, closeModal, users, groupC
                                             id="amount"
                                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                             placeholder="How much?"
-                                            onWheel={(e) => e.preventDefault()}
+                                            onWheel={(e) => e.target.blur()}                                            
                                             onChange={(e) => {
-                                                const updatedData = usersExpense.map(obj => {
-                                                    obj['share'] = parseInt(e.target.value/users.length);
+                                                console.log("payerDetails",payerDetails);
+                                                
+                                            const updatedData = usersExpense.map(obj => {
+                 
+                                                    if(obj.id === payerDetails.id) {
+                                                        obj['spend'] = parseFloat(e.target.value);
+                                                    }
+                                                    obj['share'] = parseFloat(e.target.value/users.length);
                                                     return obj;
-                                                  });
-                                                    
+                                                  });                                             
                                                 setUsersExpense(updatedData);
                                                 setAmount(e.target.value)
                                             }}
@@ -164,7 +210,7 @@ export default function AddExpenseModal({ isModalOpen, closeModal, users, groupC
                                         />
                                     </div>
 
-                                    <div>Paid by <button className="text-blue-700" onClick={togglePayerModal}>you</button> split <button className="text-blue-700" onClick={toggleShareModal}>equally</button></div>
+                                    <div>Paid by <button className="text-blue-700" onClick={togglePayerModal}>{(payerDetails.length > 1) ? "Multiple" : (user.userId == payerDetails.id) ? "you"  : payerDetails.name.split(" ")[0]}</button> split <button className="text-blue-700" onClick={toggleShareModal}>amounts</button></div>
                                 </div>
                                 {payerModal && (
                                     <div id="select-modal" tabIndex="-1" aria-hidden="true" className="fixed inset-0 z-50 overflow-y-auto overflow-x-hidden flex items-center justify-center w-full h-[calc(100%-1rem)] max-h-full">
@@ -243,7 +289,7 @@ export default function AddExpenseModal({ isModalOpen, closeModal, users, groupC
                                                                             <div className="block">
                                                                                 <div className="mb-2 text-lg font-semibold">{data.name}</div>
                                                                                 <input value={data.spend} 
-                                                                                onWheel={(e) => e.preventDefault()} onInput={(e) => { handleChange(e, index, 'multiple'); }} type="number" id={data.userId} className="w-full block p-2.5 z-20 text-sm text-gray-900 bg-gray-50 rounded-s-lg rounded-e-lg border-e-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-e-gray-700  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500" placeholder="Enter amount" required />
+                                                                                onWheel={(e) => e.target.blur()} onInput={(e) => { handleChange(e, index, 'multiple'); }} type="number" id={data.userId} className="w-full block p-2.5 z-20 text-sm text-gray-900 bg-gray-50 rounded-s-lg rounded-e-lg border-e-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-e-gray-700  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500" placeholder="Enter amount" required />
                                                                             </div>
                                                                             
                                                                         </label>
@@ -321,7 +367,7 @@ export default function AddExpenseModal({ isModalOpen, closeModal, users, groupC
                                                                             <div className="block">
                                                                                 <div className="mb-2 text-lg font-semibold">{data.name}</div>
                                                                                 <input value={data.share} 
-                                                                                onWheel={(e) => e.preventDefault()} onInput={(e) => { handleShareAmount(e, index); }} type="number" id={data.userId} className="w-full block p-2.5 z-20 text-sm text-gray-900 bg-gray-50 rounded-s-lg rounded-e-lg border-e-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-e-gray-700  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500" placeholder="Enter amount" required />
+                                                                                onWheel={(e) => e.target.blur()} onInput={(e) => { handleShareAmount(e, index); }} type="number" id={data.userId} className="w-full block p-2.5 z-20 text-sm text-gray-900 bg-gray-50 rounded-s-lg rounded-e-lg border-e-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-e-gray-700  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500" placeholder="Enter amount" required />
                                                                             </div>
                                                                         </label>
                                                                     </li>
@@ -331,7 +377,7 @@ export default function AddExpenseModal({ isModalOpen, closeModal, users, groupC
                                                     </div>
                                
                                                    
-                                                    {buttonVisibility ?
+                                                    {shareSaveButtonVisibility ?
                                                         <button
                                                             className="m-2 text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                                         onClick={toggleShareModal}>
