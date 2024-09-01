@@ -4,6 +4,11 @@ import { useAuth } from "./AuthContext";
 export function SingleExpenseCard({expense, sendExpenseDetails}) {
     const [owed, setOwed] = useState(0);
 
+    const formattedOwed = new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: 'INR',
+    }).format(owed);
+
     const user = useAuth().user;
 
     useEffect(()=>{
@@ -34,13 +39,13 @@ export function SingleExpenseCard({expense, sendExpenseDetails}) {
             {owed > 0 &&
             <div className="flex flex-col justify-center items-center text-green-500">
                 <div>You Lent</div>
-                <div>{owed}</div>
+                <div>+{formattedOwed}</div>
             </div>
             }
             {owed < 0 &&
             <div className="flex flex-col justify-center items-center text-red-600">
                 <div>You Borrowed</div>
-                <div>{owed}</div>
+                <div>{formattedOwed}</div>
             </div>
             }
             {owed === 0 &&

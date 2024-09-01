@@ -4,6 +4,10 @@ export default function ExpenseDetailsModal({closeModal, expenseDetails}) {
     details.map((txn) => {
         return totalExpense += txn.spent;
     })
+    const formattedExpense = new Intl.NumberFormat('en-IN', {
+        style: 'currency',
+        currency: 'INR',
+      }).format(totalExpense);
     return (
 <>
 <div id="static-modal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true" className="fixed inset-0 z-50 overflow-y-auto overflow-x-hidden flex items-center justify-center w-full h-[calc(100%-1rem)]">
@@ -12,7 +16,7 @@ export default function ExpenseDetailsModal({closeModal, expenseDetails}) {
             <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
                 <div>
                 <dt class="text-base font-normal text-gray-500 dark:text-gray-400 pb-1">{expenseDetails.transactionDescription}</dt>
-                <dd class="leading-none text-3xl font-bold text-gray-900 dark:text-white">{totalExpense}</dd>
+                <dd class="leading-none text-3xl font-bold text-gray-900 dark:text-white">{formattedExpense}</dd>
                 </div>
                 <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="static-modal" onClick={closeModal}>
                     <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
@@ -25,6 +29,14 @@ export default function ExpenseDetailsModal({closeModal, expenseDetails}) {
                 
 <ul class="max-w-md divide-y divide-gray-200 dark:divide-gray-700">
     {details.map((txn) => {
+        const formattedSpent = new Intl.NumberFormat('en-IN', {
+            style: 'currency',
+            currency: 'INR',
+          }).format(txn.spent);
+          const formattedShare = new Intl.NumberFormat('en-IN', {
+            style: 'currency',
+            currency: 'INR',
+          }).format(txn.myShare);
         return (
         <li class="pb-3 sm:pb-4">
             <div class="flex items-center space-x-4 rtl:space-x-reverse">
@@ -33,9 +45,9 @@ export default function ExpenseDetailsModal({closeModal, expenseDetails}) {
                     {txn.user.name}
                 </p>
                 </div>
-            <div class="w-36 m-2 flex flex-row items-center justify-between text-base font-semibold text-gray-900 dark:text-white">
-              <div className="text-green-600">{txn.spent}</div>
-              <div className="text-red-600">{txn.myShare}</div>
+            <div class="w-auto m-2 flex flex-row items-center justify-between text-base font-semibold text-gray-900 dark:text-white">
+              <div className="text-green-600 mr-6">+{formattedSpent}</div>
+              <div className="text-red-600 ml-6">-{formattedShare}</div>
            </div>
         </div>
      </li>)

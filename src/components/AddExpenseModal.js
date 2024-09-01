@@ -150,6 +150,7 @@ export default function AddExpenseModal({ isModalOpen, closeModal, users, groupC
                                             id="amount"
                                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                             placeholder="How much?"
+                                            onWheel={(e) => e.preventDefault()}
                                             onChange={(e) => {
                                                 const updatedData = usersExpense.map(obj => {
                                                     obj['share'] = parseInt(e.target.value/users.length);
@@ -241,7 +242,8 @@ export default function AddExpenseModal({ isModalOpen, closeModal, users, groupC
                                                                         >
                                                                             <div className="block">
                                                                                 <div className="mb-2 text-lg font-semibold">{data.name}</div>
-                                                                                <input value={data.spend} onInput={(e) => { handleChange(e, index, 'multiple'); }} type="number" id={data.userId} className="w-full block p-2.5 z-20 text-sm text-gray-900 bg-gray-50 rounded-s-lg rounded-e-lg border-e-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-e-gray-700  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500" placeholder="Enter amount" required />
+                                                                                <input value={data.spend} 
+                                                                                onWheel={(e) => e.preventDefault()} onInput={(e) => { handleChange(e, index, 'multiple'); }} type="number" id={data.userId} className="w-full block p-2.5 z-20 text-sm text-gray-900 bg-gray-50 rounded-s-lg rounded-e-lg border-e-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-e-gray-700  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500" placeholder="Enter amount" required />
                                                                             </div>
                                                                             
                                                                         </label>
@@ -318,7 +320,8 @@ export default function AddExpenseModal({ isModalOpen, closeModal, users, groupC
                                                                         >
                                                                             <div className="block">
                                                                                 <div className="mb-2 text-lg font-semibold">{data.name}</div>
-                                                                                <input value={data.share} onInput={(e) => { handleShareAmount(e, index); }} type="number" id={data.userId} className="w-full block p-2.5 z-20 text-sm text-gray-900 bg-gray-50 rounded-s-lg rounded-e-lg border-e-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-e-gray-700  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500" placeholder="Enter amount" required />
+                                                                                <input value={data.share} 
+                                                                                onWheel={(e) => e.preventDefault()} onInput={(e) => { handleShareAmount(e, index); }} type="number" id={data.userId} className="w-full block p-2.5 z-20 text-sm text-gray-900 bg-gray-50 rounded-s-lg rounded-e-lg border-e-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-e-gray-700  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500" placeholder="Enter amount" required />
                                                                             </div>
                                                                         </label>
                                                                     </li>

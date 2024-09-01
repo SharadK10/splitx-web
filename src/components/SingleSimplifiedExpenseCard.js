@@ -11,10 +11,14 @@ export function SingleSimplifiedExpenseCard({ settlement }) {
               
             <ul class="max-w-md space-y-1 text-gray-500 list-disc list-inside dark:text-gray-400">
               {settlement.transactionAmount.map((data) => {
+                const formattedAmount = new Intl.NumberFormat('en-IN', {
+                  style: 'currency',
+                  currency: 'INR',
+                }).format(data.amount);
                   if(data.giveOrTake === "give") {
-                    return <li className = "text-red-600 whitespace-normal">{settlement.mainUser.name} will give {data.amount} to {data.userObj.name}</li>
+                    return <li className = "text-red-600 whitespace-normal">{settlement.mainUser.name} will give {formattedAmount} to {data.userObj.name}</li>
                   }
-                  return  <li className = "text-green-500 whitespace-normal">{settlement.mainUser.name} will get {data.amount} from {data.userObj.name}</li>
+                  return  <li className = "text-green-500 whitespace-normal">{settlement.mainUser.name} will get {formattedAmount} from {data.userObj.name}</li>
                 })}
               
             </ul>
