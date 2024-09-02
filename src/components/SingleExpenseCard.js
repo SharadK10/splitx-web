@@ -3,6 +3,7 @@ import { useAuth } from "./AuthContext";
 
 export function SingleExpenseCard({expense, sendExpenseDetails}) {
     const [owed, setOwed] = useState(0);
+    const [involved, setInvolved] = useState(true);
 
     const formattedOwed = new Intl.NumberFormat('en-IN', {
       style: 'currency',
@@ -15,6 +16,9 @@ export function SingleExpenseCard({expense, sendExpenseDetails}) {
         expense.userTransactions.map((txn) => {
             if(txn.user.userId === user.userId) {
                 setOwed(parseInt(txn.spent) - parseInt(txn.myShare));
+                if(owed === 0 && parseInt(txn.spent) === 0 && parseInt(txn.myShare) === 0) {
+                  setInvolved(false);
+                }
             }
         })
     }, [])
@@ -50,7 +54,7 @@ export function SingleExpenseCard({expense, sendExpenseDetails}) {
             }
             {owed === 0 &&
             <div className="flex flex-col justify-center items-center text-gray-600">
-                <div>Not Involved</div>
+              {involved ? <div>Settled Up</div> : <div>Not Involved</div>}
             </div>
             }
             <span class="flex-shrink-0">

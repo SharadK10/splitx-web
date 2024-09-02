@@ -102,6 +102,7 @@ export default function GroupTransaction() {
         const result = simplifyExpenseAlgo(netPayments);
         const result2 = prepareUIPerspectiveResponse(result, user);
         setAllSettlements(result2);
+
   })}
      catch (error) {
       console.error("Error fetching data:", error);
@@ -194,6 +195,7 @@ export default function GroupTransaction() {
       clipboard.copy();
     });
   }, [addExpenseModalState]);
+
 
   return (
     <>
