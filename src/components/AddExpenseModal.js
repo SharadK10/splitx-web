@@ -210,7 +210,7 @@ export default function AddExpenseModal({ isModalOpen, closeModal, users, groupC
                                         />
                                     </div>
 
-                                    <div>Paid by <button className="text-blue-700" onClick={togglePayerModal}>{(payerDetails.length > 1) ? "Multiple" : (user.userId == payerDetails.id) ? "you"  : payerDetails.name.split(" ")[0]}</button> split <button className="text-blue-700" onClick={toggleShareModal}>amounts</button></div>
+                                    <div className='flex w-full justify-between'>Paid by<button className="text-blue-700" onClick={togglePayerModal}>{(payerDetails.length > 1) ? "multiple" : (user.userId === payerDetails.id) ? "you"  : payerDetails.name.split(" ")[0]}</button> split <button className="text-blue-700" onClick={toggleShareModal}>between</button></div>
                                 </div>
                                 {payerModal && (
                                     <div id="select-modal" tabIndex="-1" aria-hidden="true" className="fixed inset-0 z-50 overflow-y-auto overflow-x-hidden flex items-center justify-center w-full h-[calc(100%-1rem)] max-h-full">
