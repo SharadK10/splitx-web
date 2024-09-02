@@ -69,8 +69,8 @@ export default function Header() {
     <nav className="bg-white border-gray-200 dark:bg-gray-900 w-full max-w-screen-md mx-auto">
       <div className="flex items-center justify-between p-4">
         <a href="/" className="flex items-center space-x-3 rtl:space-x-reverse">
-          <img src="../splitx-logo2.svg" className="h-8" alt="SplitX Logo" />
-          <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">SplitX</span>
+          <img src="../splitin-logo.svg" className="h-8" alt="SplitX Logo" />
+          <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">SplitIn</span>
         </a>
         
         <div className="flex-1 flex justify-center">
