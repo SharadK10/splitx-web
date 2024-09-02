@@ -13,12 +13,14 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         const authStatus = localStorage.getItem('isAuthenticated');
+        const user = JSON.parse(localStorage.getItem('userDetails'));
+
         console.log(authStatus);
+        console.log("userdetails",user);
+
         if (authStatus === 'true') {
-          setIsAuthenticated(true);
-           getUserDetailsApi().then((res) => {
-            setUser(res.data);
-          }).catch((err) => console.log(err))
+            setIsAuthenticated(true);
+            setUser(user);
           }
         setLoading(false);
       }, []);
@@ -26,15 +28,30 @@ export const AuthProvider = ({ children }) => {
 
     // Method to log in and set session ID
     const login = () => {
-        setIsAuthenticated(true);
-        localStorage.setItem('isAuthenticated', 'true');
+        return new Promise(async (resolve, reject) => {
+            try {
+                var userdetails = await getUserDetailsApi();
+                console.log("userdetails",userdetails);
+                
+                setUser(userdetails.data);
+                setIsAuthenticated(true);
+                localStorage.setItem('userDetails', JSON.stringify(userdetails.data));
+                localStorage.setItem('isAuthenticated', 'true');
+                resolve(); // Resolve the promise on success
+            } catch (error) {
+                reject(error); // Reject the promise on error
+            }
+        });
     };
+    
 
     // Method to log out
     const logout = () => {
         setIsAuthenticated(false);
         setUser(null);
         localStorage.removeItem('isAuthenticated', 'true');
+        localStorage.removeItem('userDetails', user);
+
     };
     return (
         <AuthContext.Provider value={{ isAuthenticated, user, login, logout , loading}}>
