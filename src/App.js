@@ -8,6 +8,8 @@ import LoginComponent from './components/LoginComponent';
 import JoinGroup from './components/joinGroup';
 import { useAuth } from './components/AuthContext';
 import { RedirectComponent } from './components/RedirectComponent';
+import Home from './components/Home';
+import Footer from './components/Footer';
 
 function AuthenticatedRoute({ children }) {
   const {isAuthenticated,loading} = useAuth();
@@ -16,7 +18,6 @@ function AuthenticatedRoute({ children }) {
     return <>Loading...</>
   }
   localStorage.setItem('redirectAfterLogin', location.pathname + location.search);
-
   if(isAuthenticated) {
       return children
   } else {
@@ -30,12 +31,14 @@ function App() {
     <div className="App flex flex-col justify-center items-center">
     <Header/>
     <Routes>
+    <Route path='/' element={<Home />} />
     <Route path='/login' element={<LoginComponent />} />
     <Route path='/redirectURI' element={<RedirectComponent />} />
     <Route path='/groups' element={<AuthenticatedRoute> <ListGroups />  </AuthenticatedRoute>} /> 
     <Route path='/groups/:groupCode' element={ <AuthenticatedRoute> <GroupTransaction /> </AuthenticatedRoute>} /> 
     <Route path='/join-group/:groupCode' element={<AuthenticatedRoute> <JoinGroup /> </AuthenticatedRoute> }/>
     </Routes>
+    <Footer/>
    </div>
  )};
     
