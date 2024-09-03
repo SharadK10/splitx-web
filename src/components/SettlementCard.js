@@ -1,60 +1,39 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "./AuthContext";
 
-export function SingleExpenseCard({expense, sendExpenseDetails}) {
-    const [owed, setOwed] = useState(0);
-    const [involved, setInvolved] = useState(true);
+export function SettlementCard({expense}) {
+    const [settlementAmount, setSettlementAmount] = useState(0);
+    const [payer, setPayer] = useState(null)
+    const [receiver, setReceiver] = useState(null)
+
+    const user = useAuth().user;
 
     const formattedOwed = new Intl.NumberFormat('en-IN', {
       style: 'currency',
       currency: 'INR',
-    }).format(owed);
-
-    const user = useAuth().user;
+    }).format(settlementAmount);
 
     useEffect(()=>{
-        expense.userTransactions.map((txn) => {
-            if(txn.user.userId === user.userId) {
-                setOwed(parseInt(txn.spent) - parseInt(txn.myShare));
-                if(owed === 0 && parseInt(txn.spent) === 0 && parseInt(txn.myShare) === 0) {
-                  setInvolved(false);
-                }
-            }
-        })
+        setSettlementAmount(expense.userTransactions[0].spent);
+        setPayer(expense.userTransactions[0].user);
+        setReceiver(expense.userTransactions[1].user);
     }, [])
-
-    function handleExpenseDetailsToggle() {
-      console.log("expense", expense);
-      sendExpenseDetails(expense);
-    }
 
   return (
     <>
+    {user && payer && receiver &&
     <li>
-      <div class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-secondary-foreground hover:bg-secondary/80 px-4 h-fit w-full py-3 rounded-lg border bg-card shadow-sm text-base">
+      <div class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-secondary-foreground hover:bg-secondary/80 px-4 h-fit w-full py-3 rounded-lg border bg-card shadow-sm text-base bg-gray-200">
         <div class="w-full flex flex-col gap-1">
           <div class="text-base flex gap-2 justify-between">
             <button
               class="flex flex-1 overflow-hidden text-ellipsis"
-              onClick={handleExpenseDetailsToggle}
-            >
+            disabled>
               {expense.transactionDescription}
             </button>
-            {owed > 0 &&
             <div className="flex flex-col justify-center items-center text-green-500">
-                <div>You Lent +{formattedOwed}</div>
+                <div>{user.userId === payer.userId ? "You" : payer.name.split(" ")[0]} paid {user.userId === receiver.userId ? "You" : receiver.name.split(" ")[0]} {formattedOwed}</div>
             </div>
-            }
-            {owed < 0 &&
-            <div className="flex flex-col justify-center items-center text-red-600">
-                <div>You Borrowed {formattedOwed}</div>
-            </div>
-            }
-            {owed === 0 &&
-            <div className="flex flex-col justify-center items-center text-gray-600">
-              {involved ? <div>Settled Up</div> : <div>Not Involved</div>}
-            </div>
-            }
             <span class="flex-shrink-0">
               <button
                 class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 w-10 -my-3 -mr-3 -ml-1.5"
@@ -109,7 +88,7 @@ export function SingleExpenseCard({expense, sendExpenseDetails}) {
           </div>
         </div>
       </div>
-    </li>
+    </li>}
     </>
   );
 }

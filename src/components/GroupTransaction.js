@@ -12,6 +12,7 @@ import {
 } from "../service/simplifyExpenseAlgo";
 import SimplifiedExpenseComponent from "./SimplifiedExpenseComponent";
 import ExpenseDetailsModal from "./ExpenseDetailsModal";
+import { SettlementCard } from "./SettlementCard";
 
 export default function GroupTransaction() {
   const location = useLocation();
@@ -70,6 +71,7 @@ export default function GroupTransaction() {
         });
         setTransactions(sortedTxnList);
         const transaction = response.data.transaction;
+
 
         const repayments = transaction.map((data) => {
           return data.repayments;
@@ -197,9 +199,11 @@ export default function GroupTransaction() {
   }, [addExpenseModalState]);
 
 
+  console.log("cnsjcnsa", transactions);
+
   return (
     <>
-      <div className="flex flex-row justify-between m-4 w-80">
+      <div className="flex flex-row justify-between m-4">
         <button
           onClick={openModal}
           className="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
@@ -209,7 +213,7 @@ export default function GroupTransaction() {
         </button>
         <button
           onClick={toggleSimplifiedExpense}
-          className="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          className="w-48 ml-4 block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
           type="button"
         >
           {simplifiedExpenseState ? "Group Expense" : "Simplified Settlemets"}
@@ -353,12 +357,15 @@ export default function GroupTransaction() {
 
           <ul className="my-4 space-y-3 h-96 overflow-y-scroll">
             {transactions.map((transaction) => (
+              (transaction.transactionType === "expense" || transaction.transactionType === null) ?
               <SingleExpenseCard key={transaction.id} expense={transaction} toggleExpenseDetailsModal={toggleExpenseDetailsModal} sendExpenseDetails={handleExpenseDetails} />
+              :
+              <SettlementCard key={transaction.id} expense={transaction} toggleExpenseDetailsModal={toggleExpenseDetailsModal} sendExpenseDetails={handleExpenseDetails}/>
             ))}
           </ul>
         </div>
 
-        <SimplifiedExpenseComponent allSettlements={allSettlements} />
+        <SimplifiedExpenseComponent allSettlements={allSettlements} groupCode={groupCode} />
       </ReactCardFlip>
     </>
   );
