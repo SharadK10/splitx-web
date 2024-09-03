@@ -13,6 +13,7 @@ import {
 import SimplifiedExpenseComponent from "./SimplifiedExpenseComponent";
 import ExpenseDetailsModal from "./ExpenseDetailsModal";
 import { SettlementCard } from "./SettlementCard";
+import Footer from "./Footer";
 
 export default function GroupTransaction() {
   const location = useLocation();
@@ -367,6 +368,7 @@ export default function GroupTransaction() {
 
         <SimplifiedExpenseComponent allSettlements={allSettlements} groupCode={groupCode} />
       </ReactCardFlip>
+      <Footer/>
     </>
   );
 }

@@ -3,6 +3,7 @@ import CreateGroupModal from "./CreateGroupModal";
 import JoinGroupModal from "./JoinGroupModal";
 import { retriveAllGroupsApi } from "./Api";
 import { SingleGroupCard } from "./SingleGroupCard";
+import Footer from "./Footer";
 
 export default function ListGroups() {
   const [groups, setGroups] = useState([]);
@@ -100,6 +101,7 @@ export default function ListGroups() {
             
           </ul>
         </div>
+        <Footer/>
     </>
   );
 }

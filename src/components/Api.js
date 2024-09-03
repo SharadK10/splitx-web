@@ -3,7 +3,7 @@ import axios from 'axios';
 
 export const apiClient = axios.create(
     {
-        baseURL: 'http://localhost:8080',
+        baseURL: process.env.REACT_APP_BASE_URL,
         headers: {
             'Content-Type': 'application/json',
             "ngrok-skip-browser-warning": "69420",

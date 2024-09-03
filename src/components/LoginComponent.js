@@ -1,11 +1,14 @@
 import { useEffect, useState  } from "react";
 import { useLocation } from "react-router-dom";
 import { useAuth } from "./AuthContext";
+import Footer from "./Footer";
 
 export default function LoginComponent() {
     const {logout} = useAuth();
     async function handleLogin() {
-        window.location.href = "http://localhost:8080/oauth2/authorization/google";
+        console.log("sfd",process.env);
+        
+        window.location.href = process.env.REACT_APP_BASE_URL + "/oauth2/authorization/google";
     }
 
     const location = useLocation();
@@ -32,6 +35,7 @@ export default function LoginComponent() {
           </div>
       </div>
   </div>
+  <Footer/>
   </>
     )
 }

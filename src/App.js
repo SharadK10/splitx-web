@@ -9,7 +9,6 @@ import JoinGroup from './components/joinGroup';
 import { useAuth } from './components/AuthContext';
 import { RedirectComponent } from './components/RedirectComponent';
 import Home from './components/Home';
-import Footer from './components/Footer';
 
 function AuthenticatedRoute({ children }) {
   const {isAuthenticated,loading} = useAuth();
@@ -38,7 +37,6 @@ function App() {
     <Route path='/groups/:groupCode' element={ <AuthenticatedRoute> <GroupTransaction /> </AuthenticatedRoute>} /> 
     <Route path='/join-group/:groupCode' element={<AuthenticatedRoute> <JoinGroup /> </AuthenticatedRoute> }/>
     </Routes>
-    <Footer/>
    </div>
  )};
     

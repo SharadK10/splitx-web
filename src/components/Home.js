@@ -1,5 +1,5 @@
 import React from 'react';
-
+import Footer from './Footer';
 const Home = () => {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col w-full">
@@ -73,6 +73,7 @@ const Home = () => {
       </section>
 
       {/* Footer */}
+      <Footer/>
 
     </div>
   );
