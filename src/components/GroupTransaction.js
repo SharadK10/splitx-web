@@ -121,7 +121,7 @@ export default function GroupTransaction() {
   useEffect(() => {
     fetchData();
 
-    const buildJoinGroupURL = "http://localhost:3000/join-group/" + groupCode;
+    const buildJoinGroupURL = process.env.REACT_APP_CLIENT+"/join-group/" + groupCode;
     setJoinGroupURL(buildJoinGroupURL);
     // Set the dropdown menu element
     const $targetEl = document.getElementById("dropdownMenu");
