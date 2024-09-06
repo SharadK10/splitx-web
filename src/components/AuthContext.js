@@ -15,8 +15,8 @@ export const AuthProvider = ({ children }) => {
         const authStatus = localStorage.getItem('isAuthenticated');
         const user = JSON.parse(localStorage.getItem('userDetails'));
 
-        console.log(authStatus);
-        console.log("userdetails",user);
+        
+        
 
         if (authStatus === 'true') {
             setIsAuthenticated(true);
@@ -31,7 +31,7 @@ export const AuthProvider = ({ children }) => {
         return new Promise(async (resolve, reject) => {
             try {
                 var userdetails = await getUserDetailsApi();
-                console.log("userdetails",userdetails);
+                
                 
                 setUser(userdetails.data);
                 setIsAuthenticated(true);

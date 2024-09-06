@@ -8,12 +8,12 @@ export default function JoinGroupModal({isModalOpen,closeModal}) {
     const[error, setError] = useState(null);
 
     function joinGroup() {
-        console.log("test");
-        console.log(groupCode);
+        
+        
         if(groupCode !== '') {
             joinGroupApi(groupCode)
             .then((response) => {
-                console.log(response.data);
+                
                 closeModal();
             })
             .catch((error) => setError(error.response.data.message.split(": ")[1]))

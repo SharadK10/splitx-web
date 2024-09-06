@@ -6,7 +6,7 @@ import Footer from "./Footer";
 export default function LoginComponent() {
     const {logout} = useAuth();
     async function handleLogin() {
-        console.log("sfd",process.env);
+        
         
         window.location.href = process.env.REACT_APP_BASE_URL + "/oauth2/authorization/google";
     }

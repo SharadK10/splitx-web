@@ -35,9 +35,9 @@ export default function Header() {
           placement: 'bottom',
           triggerType: 'hover',
           offset: 10,
-          onHide: () => console.log('popover is hidden'),
-          onShow: () => console.log('popover is shown'),
-          onToggle: () => console.log('popover is toggled'),
+          // onHide: () => ,
+          // onShow: () => ,
+          // onToggle: () => ,
         };
 
         const instanceOptionspopover = {

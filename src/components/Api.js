@@ -22,8 +22,9 @@ apiClient.interceptors.response.use(
     },
     (error) => {
         // Check if the error response status is 401 or 403
-        localStorage.removeItem('isAuthenticated', 'true');
-        localStorage.removeItem('userDetails');
+        // localStorage.removeItem('isAuthenticated', 'true');
+        // localStorage.removeItem('userDetails');
+        //  window.location('/login?logout');
         // if (error.response && (error.response.status === 401 || error.response.status === 403)) {
         // }
         // Return the error to the next catch block
