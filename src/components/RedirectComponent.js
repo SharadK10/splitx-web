@@ -13,7 +13,6 @@ export function RedirectComponent() {
     useEffect(() => {
         login()
     .then(() => {
-        console.log('User logged in successfully');
         const redirectAfterLogin = localStorage.getItem('redirectAfterLogin') || '/groups';
         localStorage.removeItem('redirectAfterLogin'); // Clear the stored URL
         navigate(redirectAfterLogin, { replace: true });

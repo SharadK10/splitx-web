@@ -9,7 +9,7 @@ export default function ListGroups() {
   const [groups, setGroups] = useState([]);
   const [createModalState, setCreateModalState] = useState(false);
   const [joinModalState, setJoinModalState] = useState(false);
-
+  const [isGroupCreated,SetIsGroupCreated] = useState(null);
   // Function to open the modal
   const openCreateModal = () => setCreateModalState(true);
   // Function to close the modal
@@ -22,13 +22,13 @@ export default function ListGroups() {
     setJoinModalState(false);
   };
 
-  useEffect(() => getGroups(), [createModalState, joinModalState]);
+  useEffect(() => getGroups(), [isGroupCreated, joinModalState]);
 
   function getGroups() {
-    console.log("hit");
+    
     retriveAllGroupsApi().then((response) => {
       const groupList = response.data;
-      console.log(groupList);
+      
 
       function sortByDate(groupList, getDate) {
         return groupList.sort((a, b) => {
@@ -65,6 +65,7 @@ export default function ListGroups() {
         <CreateGroupModal
           isModalOpen={createModalState}
           closeModal={closeCreateModal}
+          SetIsGroupCreated = {SetIsGroupCreated}
         />
         <JoinGroupModal
           isModalOpen={joinModalState}

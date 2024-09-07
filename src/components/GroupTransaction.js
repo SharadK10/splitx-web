@@ -29,17 +29,19 @@ export default function GroupTransaction() {
   const [expenseDetailsModalState, setExpenseDetailsModalState] = useState(false);
   const [joinGroupURL, setJoinGroupURL] = useState("");
 
+  const [isSettleAPICall,setIsSettleAPICalls] = useState(false);
+
   const openModal = () => setAddExpenseModalState(true);
   const closeModal = () => setAddExpenseModalState(false);
 
   const toggleSimplifiedExpense = () => {
     setSimplifiedExpenseState(!simplifiedExpenseState);
     setIsFlipped(!isFlipped);
-
   }
 
-  function toggleExpenseDetailsModal() {
-      setExpenseDetailsModalState(!expenseDetailsModalState);
+  function closeModalExpense() {
+      setExpenseDetails(null);
+      setExpenseDetailsModalState(false);
   } 
 
   const handleExpenseDetails = (details) => {
@@ -56,7 +58,7 @@ export default function GroupTransaction() {
       setUsers(response.data);
       const user = response.data;
       await getGroupTransactions(groupCode).then((response) => {
-        console.log(response.data);
+        
         const txnList = response.data.transaction;
         
         function sortByDate(txnList, getDate) {
@@ -114,13 +116,21 @@ export default function GroupTransaction() {
 
   useEffect(() => {
     if(expenseDetails != null) {
-      toggleExpenseDetailsModal();
+      setExpenseDetailsModalState(true);
     }
   },[expenseDetails])
 
   useEffect(() => {
-    fetchData();
+    
+    
+    fetchData();   
+  }, [addExpenseModalState,isSettleAPICall]);
 
+  const setIsSettleAPICall= (res) => {
+    setIsSettleAPICalls(res);
+  };
+
+  useEffect(() => {
     const buildJoinGroupURL = process.env.REACT_APP_CLIENT+"/join-group/" + groupCode;
     setJoinGroupURL(buildJoinGroupURL);
     // Set the dropdown menu element
@@ -136,13 +146,13 @@ export default function GroupTransaction() {
       delay: 300,
       ignoreClickOutsideClass: false,
       onHide: () => {
-        console.log("dropdown has been hidden");
+        
       },
       onShow: () => {
-        console.log("dropdown has been shown");
+        
       },
       onToggle: () => {
-        console.log("dropdown has been toggled");
+        
       },
     };
     // Instance options object
@@ -176,7 +186,7 @@ export default function GroupTransaction() {
       contentType: "input",
       htmlEntities: false, // infinite
       onCopy: () => {
-        console.log("text copied successfully!");
+        
         document.getElementById("default-message").classList.add("hidden");
         document.getElementById("success-message").classList.remove("hidden");
       },
@@ -197,10 +207,9 @@ export default function GroupTransaction() {
     $triggerClipboardEl.addEventListener("click", () => {
       clipboard.copy();
     });
-  }, [addExpenseModalState]);
+  },[]);
 
-
-  console.log("cnsjcnsa", transactions);
+  
 
   return (
     <>
@@ -230,7 +239,7 @@ export default function GroupTransaction() {
       )}
       {expenseDetailsModalState && (
         <ExpenseDetailsModal
-        closeModal={toggleExpenseDetailsModal}
+        closeModal={closeModalExpense}
         expenseDetails={expenseDetails} />
       )}
       <ReactCardFlip isFlipped={isFlipped} flipDirection="horizontal">
@@ -359,14 +368,14 @@ export default function GroupTransaction() {
           <ul className="my-4 space-y-3 h-96 overflow-y-scroll">
             {transactions.map((transaction) => (
               (transaction.transactionType === "expense" || transaction.transactionType === null) ?
-              <SingleExpenseCard key={transaction.id} expense={transaction} toggleExpenseDetailsModal={toggleExpenseDetailsModal} sendExpenseDetails={handleExpenseDetails} />
+              <SingleExpenseCard key={transaction.id} expense={transaction}  sendExpenseDetails={handleExpenseDetails} />
               :
-              <SettlementCard key={transaction.id} expense={transaction} toggleExpenseDetailsModal={toggleExpenseDetailsModal} sendExpenseDetails={handleExpenseDetails}/>
+              <SettlementCard key={transaction.id} expense={transaction} sendExpenseDetails={handleExpenseDetails}/>
             ))}
           </ul>
         </div>
 
-        <SimplifiedExpenseComponent allSettlements={allSettlements} groupCode={groupCode} />
+        <SimplifiedExpenseComponent allSettlements={allSettlements} groupCode={groupCode} isSettleAPICall={isSettleAPICall} setIsSettleAPICall={setIsSettleAPICall}/>
       </ReactCardFlip>
       <Footer/>
     </>

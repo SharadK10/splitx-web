@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { createGroupApi } from './Api';
 
-export default function CreateGroupModal({isModalOpen,closeModal}) {
+export default function CreateGroupModal({isModalOpen,closeModal,SetIsGroupCreated}) {
 
     const [groupName,setGroupName] = useState('');
     function createGroup() {
         if(groupName != '') {
+            closeModal();
             createGroupApi(groupName)
-            .then((response) => console.log(response.data))
-            .catch((error) => console.log(error))
+            .then((response) => SetIsGroupCreated(response))
+            .catch((error) => console.error(error))
         }
     }
 
@@ -50,7 +51,7 @@ export default function CreateGroupModal({isModalOpen,closeModal}) {
                                     <span className="sr-only">Close modal</span>
                                 </button>
                             </div>
-                            <form className="p-4 md:p-5">
+                            <div className="p-4 md:p-5">
                                 <div className="grid gap-4 mb-4 grid-cols-2">
                                     <div className="col-span-2">
                                         <label
@@ -135,7 +136,7 @@ export default function CreateGroupModal({isModalOpen,closeModal}) {
                                     </svg>
                                     Create
                                 </button>
-                            </form>
+                            </div>
                         </div>
                     </div>
                 </div>

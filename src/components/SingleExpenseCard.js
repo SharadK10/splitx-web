@@ -24,7 +24,7 @@ export function SingleExpenseCard({expense, sendExpenseDetails}) {
     }, [])
 
     function handleExpenseDetailsToggle() {
-      console.log("expense", expense);
+      
       sendExpenseDetails(expense);
     }
 

@@ -12,7 +12,7 @@ export default function JoinGroup() {
     if(groupCode !== '') {
         joinGroupApi(groupCode)
         .then((response) => {
-            console.log(response.data);
+            
             setIsOpen(false);
             navigate('/groups',{replace : true});
         })

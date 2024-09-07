@@ -39,17 +39,18 @@ export default function AddExpenseModal({ isModalOpen, closeModal, users, groupC
             requestJson["userId_"+index] = data.id;
             requestJson["userSpent_"+index] = (data.spend == null)?0:data.spend;
             requestJson["userShare_"+index] = (data.share == null)?0:data.share;
+            return null;
         });
         const totalSpendSum = usersExpense.reduce((sum, item) => sum + item.share, 0);
         const totalShareSum = usersExpense.reduce((sum, item) => sum + item.spend, 0);
-        console.log("totalShareSum",totalShareSum);
-        console.log("totalSPend",totalSpendSum);
-        console.log("amount",amount);
+        
+        
+        
         
         if(totalShareSum === parseFloat(amount) && totalSpendSum === parseFloat(amount)) {
             addExpenseApi(requestJson).then((response) => {
                 closeModal();
-                console.log(response);
+                
             }).catch((error) => {
                 console.error(error);
             })
@@ -99,7 +100,7 @@ export default function AddExpenseModal({ isModalOpen, closeModal, users, groupC
                 }
                 return updatedUser;
               });
-            console.log(payerDetails);
+            
             
             setUsersExpense(updatedItems);
             setButtonVisibility(true);
@@ -193,7 +194,7 @@ export default function AddExpenseModal({ isModalOpen, closeModal, users, groupC
                                             placeholder="How much?"
                                             onWheel={(e) => e.target.blur()}                                            
                                             onChange={(e) => {
-                                                console.log("payerDetails",payerDetails);
+                                                
                                                 
                                             const updatedData = usersExpense.map(obj => {
                  
@@ -210,8 +211,9 @@ export default function AddExpenseModal({ isModalOpen, closeModal, users, groupC
                                         />
                                     </div>
 
-                                    <div className='flex w-full justify-between'>Paid by<button className="text-blue-700" onClick={togglePayerModal}>{(payerDetails.length > 1) ? "multiple" : (user.userId === payerDetails.id) ? "you"  : payerDetails.name.split(" ")[0]}</button> split <button className="text-blue-700" onClick={toggleShareModal}>between</button></div>
                                 </div>
+                                <div className='w-[60%] my-4 mx-0 flex w-full justify-between'>Paid by<a className="text-blue-700" onClick={togglePayerModal}>{(payerDetails.length > 1) ? "multiple" : (user.userId === payerDetails.id) ? "you"  : payerDetails.name.split(" ")[0]}</a> split <a className="text-blue-700" onClick={toggleShareModal}>between</a></div>
+
                                 {payerModal && (
                                     <div id="select-modal" tabIndex="-1" aria-hidden="true" className="fixed inset-0 z-50 overflow-y-auto overflow-x-hidden flex items-center justify-center w-full h-[calc(100%-1rem)] max-h-full">
                                         <div className="relative p-4 w-full max-w-md max-h-full">
@@ -277,7 +279,7 @@ export default function AddExpenseModal({ isModalOpen, closeModal, users, groupC
                                                     <div id="accordion-color-body-2" className={`${openAccordionItem === 2 ? '' : 'hidden'}`} aria-labelledby="accordion-color-heading-2">
                                                         <div className="p-5 border border-b-0 border-gray-200 dark:border-gray-700">
                                                             <ul className="space-y-4 mb-4 h-64 overflow-scroll">
-                                                                {usersExpense.map((data, index) =>  {console.log("here",data); return(
+                                                                {usersExpense.map((data, index) =>  { return(
                                                                    
                                                                     
                                                                     <li key={`share-${index}`}>
@@ -356,7 +358,7 @@ export default function AddExpenseModal({ isModalOpen, closeModal, users, groupC
                                                 <div>
                                                         <div className="p-5 border border-b-0 border-gray-200 dark:border-gray-700">
                                                             <ul className="space-y-4 mb-4 h-64 overflow-scroll">
-                                                                {usersExpense.map((data, index) =>  {console.log("nothere",data); return(
+                                                                {usersExpense.map((data, index) =>  { return(
                                                                    
                                                                     
                                                                     <li key={index}>
