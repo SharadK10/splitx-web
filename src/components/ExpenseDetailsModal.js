@@ -1,4 +1,7 @@
-export default function ExpenseDetailsModal({closeModal, expenseDetails}) {
+import { deleteExpense } from "./Api";
+
+export default function ExpenseDetailsModal({closeModal, expenseDetails, deleteExpenseApiCall, setDeleteExpenseApiCall}) {
+    console.log(expenseDetails);
     const details = expenseDetails.userTransactions;
     var totalExpense = 0;
     details.map((txn) => {
@@ -8,6 +11,15 @@ export default function ExpenseDetailsModal({closeModal, expenseDetails}) {
         style: 'currency',
         currency: 'INR',
       }).format(totalExpense);
+
+    function handleDeleteExpense() {
+        const txnId = expenseDetails.id;
+        console.log(txnId);
+        deleteExpense(txnId).then((res) => console.log(res)).catch(console.error());
+        setDeleteExpenseApiCall((deleteExpenseApiCall)=>!deleteExpenseApiCall)
+        closeModal();
+    }
+    
     return (
 <>
 <div id="static-modal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true" className="fixed inset-0 z-50 overflow-y-auto overflow-x-hidden flex items-center justify-center w-full h-[calc(100%-1rem)]">
@@ -57,7 +69,7 @@ export default function ExpenseDetailsModal({closeModal, expenseDetails}) {
 
             </div>
             <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
-                <button data-modal-hide="static-modal" type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Edit Expense</button>
+                <button data-modal-hide="static-modal" type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" onClick={handleDeleteExpense}>Delete Expense</button>
             </div>
         </div>
     </div>

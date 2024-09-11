@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Dropdown } from "flowbite-react";
 import { addExpenseApi } from "./Api";
 
-export default function SettleUpModal({ isModalOpen, closeModal, members, groupCode }) {
+export default function SettleUpModal({ isModalOpen, closeModal, members, groupCode, isSettleAPICall, setIsSettleAPICall }) {
   const [selectedPayer, setSelectedPayer] = useState(null);
   const [selectedReceiver, setSelectedReceiver] = useState(null);
   const [error, setError] = useState(null);
@@ -47,6 +47,7 @@ export default function SettleUpModal({ isModalOpen, closeModal, members, groupC
 
     addExpenseApi(requestJson)
       .then((response) => {
+        setIsSettleAPICall((isSettleAPICall) => !isSettleAPICall);
         closeModal();
         
       })

@@ -66,6 +66,10 @@ export function authenticateUserApi() {
     return apiClient.get("/api/user/");
 }
 
+export function deleteExpense(id) {
+    return apiClient.put("/api/delete-transaction/"+id);
+}
+
 export function logout() {
     return apiClient.post("/logout");
 }

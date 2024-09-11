@@ -31,6 +31,8 @@ export default function GroupTransaction() {
 
   const [isSettleAPICall,setIsSettleAPICalls] = useState(false);
 
+  const [deleteExpenseApiCall, setDeleteExpenseApiCall] = useState(false);
+
   const openModal = () => setAddExpenseModalState(true);
   const closeModal = () => setAddExpenseModalState(false);
 
@@ -58,9 +60,7 @@ export default function GroupTransaction() {
       setUsers(response.data);
       const user = response.data;
       await getGroupTransactions(groupCode).then((response) => {
-        
-        const txnList = response.data.transaction;
-        
+        const txnList = response.data;
         function sortByDate(txnList, getDate) {
           return txnList.sort((a, b) => {
             const date1 = getDate(a);
@@ -73,13 +73,13 @@ export default function GroupTransaction() {
                return txn.updatedDate ? new Date(txn.updatedDate) : new Date(txn.createdDate);
         });
         setTransactions(sortedTxnList);
-        const transaction = response.data.transaction;
+        const transaction = response.data;
 
 
         const repayments = transaction.map((data) => {
           return data.repayments;
         });
-
+        console.log("repay", repayments);
         const netPayments = {};
 
         const addPayments = (userId, userObj, amount) => {
@@ -120,11 +120,9 @@ export default function GroupTransaction() {
     }
   },[expenseDetails])
 
-  useEffect(() => {
-    
-    
+  useEffect(() => { 
     fetchData();   
-  }, [addExpenseModalState,isSettleAPICall]);
+  }, [addExpenseModalState, isSettleAPICall, deleteExpenseApiCall]);
 
   const setIsSettleAPICall= (res) => {
     setIsSettleAPICalls(res);
@@ -240,7 +238,9 @@ export default function GroupTransaction() {
       {expenseDetailsModalState && (
         <ExpenseDetailsModal
         closeModal={closeModalExpense}
-        expenseDetails={expenseDetails} />
+        expenseDetails={expenseDetails}
+        deleteExpenseApiCall={deleteExpenseApiCall}
+        setDeleteExpenseApiCall={setDeleteExpenseApiCall} />
       )}
       <ReactCardFlip isFlipped={isFlipped} flipDirection="horizontal">
         <div className="w-full max-w-lg p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-gray-800 dark:border-gray-700">
