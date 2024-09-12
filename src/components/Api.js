@@ -18,15 +18,17 @@ export const apiClient = axios.create(
 apiClient.interceptors.response.use(
     (response) => {
         // Return the response directly if it's successful
+        console.log(response);
         return response;
     },
     (error) => {
         // Check if the error response status is 401 or 403
-        // localStorage.removeItem('isAuthenticated', 'true');
-        // localStorage.removeItem('userDetails');
-        //  window.location('/login?logout');
-        // if (error.response && (error.response.status === 401 || error.response.status === 403)) {
-        // }
+        console.log(error);
+        if (error.response && (error.message === "Request failed with status code 401")) {
+            localStorage.removeItem('isAuthenticated', 'true');
+            localStorage.removeItem('userDetails');
+            window.location.replace('/login?logout');
+        }
         // Return the error to the next catch block
         return Promise.reject(error);
     }

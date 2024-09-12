@@ -13,8 +13,10 @@ export default function ExpenseDetailsModal({closeModal, expenseDetails, deleteE
 
     function handleDeleteExpense() {
         const txnId = expenseDetails.id;
-         deleteExpense(txnId).then((res) => console.log("Successfully deleted expense")).catch(console.error());
-        setDeleteExpenseApiCall((deleteExpenseApiCall)=>!deleteExpenseApiCall)
+        deleteExpense(txnId).then((res) => {
+            console.log("Successfully deleted expense");
+            setDeleteExpenseApiCall((deleteExpenseApiCall)=>!deleteExpenseApiCall);
+        }).catch(console.error());
         closeModal();
     }
     
