@@ -1,7 +1,6 @@
 import { deleteExpense } from "./Api";
 
 export default function ExpenseDetailsModal({closeModal, expenseDetails, deleteExpenseApiCall, setDeleteExpenseApiCall}) {
-    console.log(expenseDetails);
     const details = expenseDetails.userTransactions;
     var totalExpense = 0;
     details.map((txn) => {
@@ -14,8 +13,7 @@ export default function ExpenseDetailsModal({closeModal, expenseDetails, deleteE
 
     function handleDeleteExpense() {
         const txnId = expenseDetails.id;
-        console.log(txnId);
-        deleteExpense(txnId).then((res) => console.log(res)).catch(console.error());
+         deleteExpense(txnId).then((res) => console.log("Successfully deleted expense")).catch(console.error());
         setDeleteExpenseApiCall((deleteExpenseApiCall)=>!deleteExpenseApiCall)
         closeModal();
     }

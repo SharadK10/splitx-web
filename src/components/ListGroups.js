@@ -28,7 +28,6 @@ export default function ListGroups() {
     
     retriveAllGroupsApi().then((response) => {
       const groupList = response.data;
-      
 
       function sortByDate(groupList, getDate) {
         return groupList.sort((a, b) => {
@@ -93,12 +92,18 @@ export default function ListGroups() {
             My Groups
           </h5>
           <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-            Recent group
+            Recent groups
           </p>
           <ul class="my-4 space-y-3 h-96 overflow-y-scroll">
-          {groups.map((group) => (
+          {groups.length > 0 ?
+          groups.map((group) => (
               <SingleGroupCard group={group}/>
-            ))}
+            )):
+            <div className="flex flex-col justify-center items-center text-gray-500 dark:text-gray-400 font-medium">
+              <img src="../create-group.svg" alt="Add expense img" className="h-24 w-24" />
+              <div>No groups found!</div>
+              <div>Create a group to get started.</div>
+            </div> }
             
           </ul>
         </div>

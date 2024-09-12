@@ -79,7 +79,6 @@ export default function GroupTransaction() {
         const repayments = transaction.map((data) => {
           return data.repayments;
         });
-        console.log("repay", repayments);
         const netPayments = {};
 
         const addPayments = (userId, userObj, amount) => {
@@ -207,7 +206,6 @@ export default function GroupTransaction() {
     });
   },[]);
 
-  
 
   return (
     <>
@@ -366,12 +364,18 @@ export default function GroupTransaction() {
           </p>
 
           <ul className="my-4 space-y-3 h-96 overflow-y-scroll">
-            {transactions.map((transaction) => (
+            {transactions.length > 0 ?
+            transactions.map((transaction) => (
               (transaction.transactionType === "expense" || transaction.transactionType === null) ?
               <SingleExpenseCard key={transaction.id} expense={transaction}  sendExpenseDetails={handleExpenseDetails} />
               :
               <SettlementCard key={transaction.id} expense={transaction} sendExpenseDetails={handleExpenseDetails}/>
-            ))}
+            )) :
+            <div className="flex flex-col justify-center items-center text-gray-500 dark:text-gray-400 font-medium">
+              <img src="../add-expense.svg" alt="Add expense img" className="h-24 w-24" />
+              <div>No expense in this group!</div>
+              <div>Add expense to split and settle.</div>
+            </div> }
           </ul>
         </div>
 

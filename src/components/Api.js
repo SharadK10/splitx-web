@@ -42,7 +42,6 @@ export function createGroupApi(groupName) {
 }
 
 export function joinGroupApi(groupCode) {
-    console.log(groupCode);
     return apiClient.post("/api/join-group", {groupCode:groupCode})
 }
 

@@ -14,7 +14,7 @@ const Home = () => {
             Keep track, settle up, and stay organized with our simple expense-sharing app.
           </p>
           <div className="mt-6">
-            <a href="/login" className="bg-blue-500 text-white px-4 py-2 md:px-6 md:py-3 rounded-md shadow hover:bg-blue-600">
+            <a href="/groups" className="bg-blue-500 text-white px-4 py-2 md:px-6 md:py-3 rounded-md shadow hover:bg-blue-600">
               Get Started
             </a>
           </div>
