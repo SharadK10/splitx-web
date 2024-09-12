@@ -27,15 +27,15 @@ This release introduces several new features, performance improvements, and bug 
 - NA
 
 ### Upgrade Notes
-NA
+- NA
 
 ### Known Issues
 - There is a minor visual bug in the group creation form in Firefox. We are working on a fix for the next release.
 
 ### Contributors
-- [User1](https://github.com/Bhaarat-khatri)
-- [User2](https://github.com/SharadK10)
+- [Bhaarat Khatri](https://github.com/Bhaarat-khatri)
+- [Sharad Kushwaha](https://github.com/SharadK10)
 
 ### Version Information
 Commit Hash: `cae6dcb9ca3f98d3aa9b55434bd9c6a3760173a0`  
-Git Tag: `v1.0.
+Git Tag: `v1.0.1`
