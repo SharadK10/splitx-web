@@ -22,7 +22,7 @@ apiClient.interceptors.response.use(
         if (error.response && (error.message === "Request failed with status code 401")) {
             localStorage.removeItem('isAuthenticated', 'true');
             localStorage.removeItem('userDetails');
-            window.location.href = 'http://localhost:3000/login?logout';
+            window.location.href =  process.env.REACT_APP_CLIENT + '/login?logout';
         } 
         return new Promise((resolve, reject) => {
             setTimeout(() => {
