@@ -1,5 +1,5 @@
 import axios from 'axios';
-
+import { navigate } from 'react-router-dom';
 
 export const apiClient = axios.create(
     {
@@ -12,25 +12,23 @@ export const apiClient = axios.create(
     },
     
 );
-
-
 // Add a response interceptor
 apiClient.interceptors.response.use(
     (response) => {
-        // Return the response directly if it's successful
-        console.log(response);
         return response;
-    },
-    (error) => {
+    }, 
+    async(error) => {
         // Check if the error response status is 401 or 403
-        console.log(error);
         if (error.response && (error.message === "Request failed with status code 401")) {
             localStorage.removeItem('isAuthenticated', 'true');
             localStorage.removeItem('userDetails');
-            window.location.replace('/login?logout');
-        }
-        // Return the error to the next catch block
-        return Promise.reject(error);
+            window.location.href = 'http://localhost:3000/login?logout';
+        } 
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+              reject(error);
+            }, 400);
+          });
     }
 );
 
