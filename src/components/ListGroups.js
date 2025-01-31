@@ -88,6 +88,7 @@ export default function ListGroups() {
         </div>
 
         <div class="w-full max-w-lg p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-gray-800 dark:border-gray-700">
+          <div className={`transition-all ${(createModalState || joinModalState) ? 'blur-sm' : ''}`}>
           <h5 class="mb-3 text-base font-semibold text-gray-900 md:text-xl dark:text-white">
             My Groups
           </h5>
@@ -106,6 +107,7 @@ export default function ListGroups() {
             </div> }
             
           </ul>
+          </div>
         </div>
         <Footer/>
     </>

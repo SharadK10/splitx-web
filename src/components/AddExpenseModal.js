@@ -129,7 +129,7 @@ export default function AddExpenseModal({ isModalOpen, closeModal, users, groupC
                     id="crud-modal"
                     tabIndex="-1"
                     aria-hidden="true"
-                    className="fixed inset-0 z-50 overflow-y-auto overflow-x-hidden flex items-center justify-center w-full h-[calc(100%-1rem)] max-h-full"
+                    className="fixed inset-0 z-50 overflow-y-auto overflow-x-hidden flex items-center justify-center ml-3 mr-3 h-[calc(100%-1rem)] max-h-full"
                 >
                     <div className="relative w-full max-w-md max-h-full rounded-lg bg-white shadow-lg shadow-red-950/10">
                         <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">

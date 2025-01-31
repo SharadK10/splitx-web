@@ -99,15 +99,15 @@ export default function SettleUpModal({ isModalOpen, closeModal, members, groupC
               {/* Modal Body */}
               <div className="p-4 md:p-5">
                 {error && <div className="text-red-600">{error}</div>}
-                <div className="grid-cols-2">
+                <div>
                   {/* Payer Dropdown */}
-                  <div className="w-full flex flex-row justify-between items-center m-auto">
+                  <div className="w-full flex flex-row justify-between items-center">
                     <Dropdown
                       label={
                         <img
-                          className="w-16 h-16 rounded-full"
+                          className="w-12 h-12 rounded-full"
                           src={
-                            selectedPayer?.photo || "../user-logo.svg"
+                            selectedPayer?.photo || "../user.png"
                           }
                           alt="Payer Profile"
                         />
@@ -130,20 +130,22 @@ export default function SettleUpModal({ isModalOpen, closeModal, members, groupC
                         </Dropdown.Item>
                       ))}
                     </Dropdown>
-
+                    <div>
                     <img
-                      src="../arrow.svg"
-                      alt="Right Arrow"
-                      className="h-8 w-8"
+                      src="../money.png"
+                      alt="Send money direction"
+                      className="h-12 w-12"
                     />
+                    </div>
+                    
 
                     {/* Receiver Dropdown */}
                     <Dropdown
                       label={
                         <img
-                          className="w-16 h-16 rounded-full"
+                          className="w-12 h-12 rounded-full"
                           src={
-                            selectedReceiver?.photo || "../user-logo.svg"
+                            selectedReceiver?.photo || "../user.png"
                           }
                           alt="Receiver Profile"
                         />
@@ -180,7 +182,6 @@ export default function SettleUpModal({ isModalOpen, closeModal, members, groupC
                       htmlFor="settle"
                       className="w-full block m-2 text-sm font-medium text-gray-900 dark:text-white"
                     >
-                      Amount:
                     </label>
                     <input
                       type="number"

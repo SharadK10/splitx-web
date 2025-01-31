@@ -16,6 +16,7 @@ export default function SimplifiedExpenseComponent({ allSettlements, groupCode, 
   return (
     <>
     <SettleUpModal isModalOpen={settleUpModalStatus} closeModal={toggleSettleUpModal} members={members} groupCode={groupCode} isSettleAPICall={isSettleAPICall}  setIsSettleAPICall= {setIsSettleAPICall}/>
+    <div className={`transition-all ${settleUpModalStatus ? 'blur-sm' : ''}`}>
       <div class="w-full max-w-lg p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-gray-800 dark:border-gray-700">
         <div className="flex flex-row justify-between">
           <h5 class="mb-3 text-base font-semibold text-gray-900 md:text-xl dark:text-white">
@@ -34,6 +35,7 @@ export default function SimplifiedExpenseComponent({ allSettlements, groupCode, 
             <SingleSimplifiedExpenseCard settlement={settlement} />
           ))}
         </ul>
+      </div>
       </div>
     </>
   );
