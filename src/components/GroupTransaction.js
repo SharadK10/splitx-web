@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { getGroupTransactions, getGroupUsers } from "./Api";
+import { getGroupTransactions, getGroupUsers, getGroupDetails } from "./Api";
 import AddExpenseModal from "./AddExpenseModal";
 import { SingleExpenseCard } from "./SingleExpenseCard";
 import ReactCardFlip from "react-card-flip";
@@ -20,6 +20,7 @@ export default function GroupTransaction() {
   const groupCode = location.pathname.split("/")[2];
   const [transactions, setTransactions] = useState([]);
   const [users, setUsers] = useState([]);
+  const [group, setGroup] = useState(null);
   const [addExpenseModalState, setAddExpenseModalState] = useState(false);
   const [simplifiedExpenseState, setSimplifiedExpenseState] = useState(false);
   const [allSettlements, setAllSettlements] = useState([]);
@@ -50,6 +51,14 @@ export default function GroupTransaction() {
     setExpenseDetails(details);
   }
 
+  const fetchGroupDetails = async () => {
+    try {
+      const res = await getGroupDetails(groupCode);
+      setGroup(res.data);
+    } catch(e) {
+        console.log("Error in fetching group details", e);
+    }
+  }
 
 
   const fetchData = async () => {
@@ -120,8 +129,10 @@ export default function GroupTransaction() {
   },[expenseDetails])
 
   useEffect(() => { 
+    fetchGroupDetails();
     fetchData();   
   }, [addExpenseModalState, isSettleAPICall, deleteExpenseApiCall]);
+
 
   const setIsSettleAPICall= (res) => {
     setIsSettleAPICalls(res);
@@ -206,7 +217,6 @@ export default function GroupTransaction() {
     });
   },[]);
 
-
   return (
     <>
       <div className="flex flex-row justify-between m-4">
@@ -245,7 +255,7 @@ export default function GroupTransaction() {
         <div className="w-full max-w-lg p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-gray-800 dark:border-gray-700">
           <div className="flex justify-between">
             <h5 className="mb-3 text-base font-semibold text-gray-900 md:text-xl dark:text-white">
-              Group Expenses
+              {!group ? null : group.groupName}
             </h5>
             <button
               id="dropdownButton"
@@ -381,7 +391,7 @@ export default function GroupTransaction() {
         </div>
         </div>
         <div className={`transition-all ${(addExpenseModalState || expenseDetailsModalState) ? 'blur-sm' : ''}`}>
-        <SimplifiedExpenseComponent allSettlements={allSettlements} groupCode={groupCode} isSettleAPICall={isSettleAPICall} setIsSettleAPICall={setIsSettleAPICall}/>
+        <SimplifiedExpenseComponent allSettlements={allSettlements} groupCode={groupCode} isSettleAPICall={isSettleAPICall} setIsSettleAPICall={setIsSettleAPICall} group={group}/>
         </div>
       </ReactCardFlip>
       <Footer/>

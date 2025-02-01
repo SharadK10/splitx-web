@@ -72,7 +72,7 @@ export default function Header() {
       <img src="../splitin-logo.svg" className="h-8" alt="SplitIn Logo" />
       {/* Hide the name on smaller screens */}
       <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white hidden md:inline">
-        Split<span className="text-3xl text-blue-500">In</span>
+        Split<span className="text-blue-500">In</span>
       </span>
     </a>
 

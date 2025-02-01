@@ -73,3 +73,7 @@ export function logout() {
     return apiClient.post("/logout");
 }
 
+export function getGroupDetails(groupCode) {
+    return apiClient.get("/api/" + groupCode);
+}
+
