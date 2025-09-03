@@ -77,3 +77,7 @@ export function getGroupDetails(groupCode) {
     return apiClient.get("/api/" + groupCode);
 }
 
+export function editGroupApi(groupCode, groupName) {
+    return apiClient.put("/api/group/" + groupCode + "/edit", {groupName:groupName});
+}
+

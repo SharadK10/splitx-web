@@ -1,9 +1,22 @@
-import React, { useState } from 'react';
-import { createGroupApi } from './Api';
+import React, { useState, useEffect } from 'react';
+import { createGroupApi, editGroupApi } from './Api';
 
-export default function CreateGroupModal({isModalOpen,closeModal,SetIsGroupCreated}) {
+
+export default function CreateGroupModal({isModalOpen,closeModal,SetIsGroupCreated, type, group}) {
 
     const [groupName,setGroupName] = useState('');
+    const [groupCode, setGroupCode] = useState('');
+
+    useEffect(() => {
+        if (type === "edit" && group) {
+            setGroupName(group.groupName || '');
+            setGroupCode(group.groupCode || '');
+        } else {
+            setGroupName('');
+            setGroupCode('');
+        }
+    }, [group, type, isModalOpen]); // runs whenever modal opens or group changes
+
     function createGroup() {
         if(groupName != '') {
             closeModal();
@@ -13,9 +26,21 @@ export default function CreateGroupModal({isModalOpen,closeModal,SetIsGroupCreat
         }
     }
 
+    function editGroup() {
+        if (groupName && groupName !== group.groupName) {
+            editGroupApi(groupCode, groupName)
+                .then((response) => {
+                    SetIsGroupCreated(response); // triggers ListGroups useEffect
+                    closeModal(); // this now also resets isEditModalOpen
+                })
+                .catch(console.error);
+        }
+    }
+
     return (
         <>
             {isModalOpen && (
+                
                 <div
                     id="crud-modal"
                     tabIndex="-1"
@@ -26,7 +51,7 @@ export default function CreateGroupModal({isModalOpen,closeModal,SetIsGroupCreat
                         <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
                             <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
                                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                                    Create New Group
+                                    {type === "create" ? "Create New Group" : "Edit Group"}
                                 </h3>
                                 <button
                                     type="button"
@@ -66,6 +91,7 @@ export default function CreateGroupModal({isModalOpen,closeModal,SetIsGroupCreat
                                             id="name"
                                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                             placeholder="Enter Group Name"
+                                            value = {groupName}
                                             onChange={(e)=>setGroupName(e.target.value)}
                                             required
                                         />
@@ -119,7 +145,7 @@ export default function CreateGroupModal({isModalOpen,closeModal,SetIsGroupCreat
                                         ></textarea>
                                     </div> */}
                                 </div>
-                                <button onClick={createGroup}
+                                <button onClick={type == "create" ? createGroup : editGroup}
                                     className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                 >
                                     <svg
@@ -134,7 +160,7 @@ export default function CreateGroupModal({isModalOpen,closeModal,SetIsGroupCreat
                                             clipRule="evenodd"
                                         ></path>
                                     </svg>
-                                    Create
+                                    {type === "create" ? "Create" : "Edit"}
                                 </button>
                             </div>
                         </div>

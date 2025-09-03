@@ -257,6 +257,23 @@ export default function GroupTransaction() {
             <h5 className="mb-3 text-base font-semibold text-gray-900 md:text-xl dark:text-white">
               {!group ? null : group.groupName}
             </h5>
+            {/* --- Added stacked profile pictures --- */}
+    <div className="flex -space-x-2">
+      {group?.users?.slice(0, 3).map((member, index) => (
+        <img
+          key={index}
+          src={member.user.photo || '/default-avatar.png'}
+          alt={member.user.name || 'User'}
+          className="w-8 h-8 rounded-full border-2 border-white dark:border-gray-700"
+        />
+      ))}
+      {group?.users?.length > 3 && (
+        <div className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-300 
+                        text-gray-800 text-xs font-semibold border-2 border-white dark:border-gray-700">
+          +{group.users.length - 3}
+        </div>
+      )}
+    </div>
             <button
               id="dropdownButton"
               data-dropdown-toggle="dropdown"

@@ -1,63 +1,29 @@
-export function SingleGroupCard({group}) {
-    const groupUrl = "/groups/" + group.groupCode
+import { useState } from "react";
+
+export function SingleGroupCard({ group, openEditModal, openGroupLogModal }) {
+  const groupUrl = "/groups/" + group.groupCode;
+  const [isActive, setIsActive] = useState(false);
+
+  const btnId = `dropdownButton-${group.groupCode}`;
+  const menuId = `dropdownMenu-${group.groupCode}`;
+
+  const toggleDropdown = () => setIsActive(!isActive);
+
   return (
     <li>
-      <div class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-secondary-foreground hover:bg-secondary/80 px-4 h-fit w-full py-3 rounded-lg border bg-card shadow-sm text-base">
-        <div class="w-full flex flex-col gap-1">
-          <div class="text-base flex gap-2 justify-between">
-            <a
-              class="flex-1 overflow-hidden text-ellipsis"
-              href={groupUrl}
-            >
+      <div className="relative inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-secondary-foreground hover:bg-secondary/80 px-4 h-fit w-full py-3 rounded-lg border bg-card shadow-sm text-base">
+
+        {/* Main content */}
+        <div className="w-full flex flex-col gap-1">
+          <div className="text-base flex items-center justify-between gap-2">
+            <a className="flex-1 overflow-hidden text-ellipsis" href={groupUrl}>
               {group.groupName}
             </a>
-            <span class="flex-shrink-0">
-              {/* <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 w-10 -my-3 -ml-3 -mr-1.5">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  class="w-4 h-4 text-muted-foreground"
-                >
-                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                </svg>
-              </button> */}
-              <button
-                class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 w-10 -my-3 -mr-3 -ml-1.5"
-                type="button"
-                id="radix-:r8r:"
-                aria-haspopup="menu"
-                aria-expanded="false"
-                data-state="closed"
-              >
-                {/* <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  class="w-4 h-4"
-                >
-                  <circle cx="12" cy="12" r="1"></circle>
-                  <circle cx="19" cy="12" r="1"></circle>
-                  <circle cx="5" cy="12" r="1"></circle>
-                </svg> */}
-              </button>
-            </span>
           </div>
-          <div class="text-muted-foreground font-normal text-xs">
-            <div class="w-full flex items-center justify-between">
-              {/* <div class="flex items-center">
+
+          <div className="text-muted-foreground font-normal text-xs">
+            <div className="w-full flex items-center justify-between">
+              <div className="flex items-center">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
@@ -65,30 +31,10 @@ export function SingleGroupCard({group}) {
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  class="w-3 h-3 inline mr-1"
-                >
-                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
-                  <circle cx="9" cy="7" r="4"></circle>
-                  <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
-                  <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                </svg>
-                <span>3</span>
-              </div> */}
-              <div class="flex items-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  class="w-3 h-3 inline mx-1"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="w-3 h-3 inline mx-1"
                 >
                   <rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect>
                   <line x1="16" x2="16" y1="2" y2="6"></line>
@@ -98,6 +44,80 @@ export function SingleGroupCard({group}) {
                 <span>{new Date(group.groupCreateDate).toLocaleDateString().split(', ')[0]}</span>
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* Top-right controls */}
+        <div className="absolute top-3 right-3 flex items-center gap-2">
+          {/* Profile pictures */}
+          <div className="flex -space-x-3">
+            {group.users.slice(0, 3).map((member, index) => (
+              <img
+                key={index}
+                src={member.user.photo || '/default-avatar.png'}
+                alt={member.user.name || 'User'}
+                className="w-8 h-8 rounded-full border-2 border-white dark:border-gray-700"
+              />
+            ))}
+            {group.users.length > 3 && (
+              <div className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-300 
+                              text-gray-800 text-xs font-semibold border-2 border-white dark:border-gray-700">
+                +{group.users.length - 3}
+              </div>
+            )}
+          </div>
+
+          {/* Gray info icon */}
+          <button onClick={() => openGroupLogModal(group)}
+            className="flex items-center justify-center rounded-full bg-gray-200 text-gray-700 h-5 w-5 hover:bg-gray-300"
+            type="button"
+          >
+            <span className="italic font-serif text-sm">i</span>
+          </button>
+
+          {/* Vertical ellipsis button */}
+          <div className="relative">
+            <button
+              id={btnId}
+              className={`flex items-center justify-center rounded-md text-sm font-medium 
+                          h-8 w-8 ${isActive ? 'border border-gray-200' : ''} 
+                          hover:bg-accent hover:text-accent-foreground`}
+              type="button"
+              onClick={toggleDropdown}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 4 16"
+                fill="currentColor"
+                className="w-4 h-4"
+              >
+                <circle cx="2" cy="2" r="2"></circle>
+                <circle cx="2" cy="8" r="2"></circle>
+                <circle cx="2" cy="14" r="2"></circle>
+              </svg>
+            </button>
+
+            {/* Dropdown menu */}
+            {isActive && (
+              <div
+                id={menuId}
+                className="absolute right-0 mt-2 z-20 w-44 bg-white dark:bg-gray-700 
+                           rounded-lg border border-gray-200 dark:border-gray-700 shadow-lg"
+              >
+                <ul className="py-2 text-sm divide-y divide-gray-100 dark:divide-gray-600">
+                  <li>
+                    <button
+                      onClick={() => {toggleDropdown(); openEditModal(group)}}
+                      className="block w-full text-left px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600"
+                    >
+                      Edit
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            )}
           </div>
         </div>
       </div>
