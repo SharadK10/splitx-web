@@ -81,3 +81,8 @@ export function editGroupApi(groupCode, groupName) {
     return apiClient.put("/api/group/" + groupCode + "/edit", {groupName:groupName});
 }
 
+export function getGroupLogsApi(groupCode) {
+    return apiClient.get("/api/group/" + groupCode + "/get-logs")
+}
+
+

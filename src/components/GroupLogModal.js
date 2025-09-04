@@ -1,11 +1,30 @@
 import { useEffect, useState } from "react";
+import { getGroupLogsApi } from "./Api";
 
 export default function GroupLogModal({ isModalOpen, group, closeModal }) {
   const [currentGroup, setCurrentGroup] = useState({});
+  const [groupLogs, setGroupLogs] = useState([]);
 
   useEffect(() => {
     setCurrentGroup(group);
+    getGroupLogs(group)
+    console.log(groupLogs);
   }, [group]); // runs whenever modal opens or group changes
+
+  function getGroupLogs(group) {
+  if(group != null) {
+    getGroupLogsApi(group.groupCode).then((res) => {
+      const logs = [
+        ...group.users.map(user => ({ type : "joined", username : user.user.name, timestamp: user.joinedTimestamp })),
+        ...res.data.map(log => ({ type : "renamed", username : log.renamedBy.name, oldname : log.oldName, newname : log.newName, timestamp: log.renamedOn })),
+      ];
+      logs.shift();
+      logs.push({type : "created", groupname : group.groupName, username : group.groupOwner.name, timestamp : group.groupCreateDate})
+      logs.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+      setGroupLogs(logs);
+    })
+  }
+  }
 
   return (
     <>
@@ -52,12 +71,33 @@ export default function GroupLogModal({ isModalOpen, group, closeModal }) {
                 </button>
               </div>
               <div className="p-4 md:p-5 space-y-4">
-                <ul className="max-w-md divide-y text-gray-600 dark:text-gray-600">
-                  <li>
-                    Coming Soon - There will be group logs available for information like who joined when
-                  </li>
-                </ul>
-              </div>
+  <ul className="max-w-md divide-y text-gray-600 dark:text-gray-600 
+                 max-h-40 overflow-y-auto pr-2">
+    {groupLogs.map((log, idx) => (
+      <li key={idx} className="py-2">
+        [
+        {new Date(log.timestamp).toLocaleString()}
+        ]{" "}
+        {log.type === "created" && (
+          <>
+            <strong>{log.username}</strong> created the group
+          </>
+        )}
+        {log.type === "joined" && (
+          <>
+            <strong>{log.username}</strong> joined
+          </>
+        )}
+        {log.type === "renamed" && (
+          <>
+            <strong>{log.username}</strong> renamed group from{" "}
+            <em>{log.oldname}</em> to <em>{log.newname}</em>
+          </>
+        )}
+      </li>
+    ))}
+  </ul>
+</div>
             </div>
           </div>
         </div>
