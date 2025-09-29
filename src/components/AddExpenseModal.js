@@ -11,12 +11,14 @@ export default function AddExpenseModal({ isModalOpen, closeModal, users, groupC
     const [buttonVisibility, setButtonVisibility] = useState(false)
     const [shareSaveButtonVisibility,setShareSaveButtonVisibility] = useState(true);
     const {user} = useAuth();
+    const [errorMessage, setErrorMessage] = useState('');
 
     const [payerDetails, setPayerDetails] = useState(() => {
         const userDetail = users.find(u => u.user.userId === user.userId);
         return userDetail ? {
             id: userDetail.user.userId,
             name: userDetail.user.name,
+            profilePic: userDetail.user.photo,
             spend: 0,
             share: null
         } : {};
@@ -26,12 +28,48 @@ export default function AddExpenseModal({ isModalOpen, closeModal, users, groupC
     const [usersExpense, setUsersExpense] = useState(() => users.map(u => ({
         id: u.user.userId,
         name: u.user.name,
+        profilePic: u.user.photo,
         spend: null,
         share: null
     })));
 
+    const totalSpend = usersExpense.reduce((sum, u) => sum + (u.spend || 0), 0);
+    const remaining = parseFloat(amount) - totalSpend;
 
-    function addExpense() {     
+    let balanceBg = 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200'; // default: under
+if (remaining === 0) {
+    balanceBg = 'bg-green-100 dark:bg-green-800 text-green-800 dark:text-green-200'; // balanced
+} else if (remaining < 0) {
+    balanceBg = 'bg-red-100 dark:bg-red-800 text-red-800 dark:text-red-200'; // over
+}
+
+const handleCloseModal = () => {
+    setDescription('');
+    setAmount(0);
+    setPayerModal(false);
+    setShareModal(false);
+    setUsersExpense(users.map(u => ({
+        id: u.user.userId,
+        name: u.user.name,
+        spend: null,
+        share: null,
+        profilePic: u.user.profilePic || '/default-profile.png',
+    })));
+    setPayerDetails({ id: user.userId, name: user.name, spend: 0, share: null });
+    setErrorMessage('');
+    closeModal();
+};
+
+    function addExpense() {  
+        if (description.trim().length < 2) {
+            setErrorMessage("Description must be at least 2 characters long");
+            return;
+        }
+    
+        if (parseFloat(amount) <= 0) {
+            setErrorMessage("Amount must be greater than 0");
+            return;
+        }  
         var requestJson = {};
         requestJson["groupCode"] = groupCode;
         requestJson["description"] = description;
@@ -44,12 +82,12 @@ export default function AddExpenseModal({ isModalOpen, closeModal, users, groupC
         const totalSpendSum = usersExpense.reduce((sum, item) => sum + item.share, 0);
         const totalShareSum = usersExpense.reduce((sum, item) => sum + item.spend, 0);
         
-        
+        setErrorMessage("");
         
         
         if(totalShareSum === parseFloat(amount) && totalSpendSum === parseFloat(amount)) {
             addExpenseApi(requestJson).then((response) => {
-                closeModal();
+                handleCloseModal();
                 
             }).catch((error) => {
                 console.error(error);
@@ -64,7 +102,19 @@ export default function AddExpenseModal({ isModalOpen, closeModal, users, groupC
       
     }
 
+
+
     function togglePayerModal() {
+        if (!payerModal && parseFloat(amount) > 0) {
+            // Initialize all spends to 0
+            const updatedExpenses = usersExpense.map(u => ({
+                ...u,
+                spend: 0
+            }));
+            setUsersExpense(updatedExpenses);
+            setPayerDetails(updatedExpenses); // optional
+            setButtonVisibility(false); // save button disabled initially
+        }
         setPayerModal(!payerModal);
     }
 
@@ -77,22 +127,17 @@ export default function AddExpenseModal({ isModalOpen, closeModal, users, groupC
     }
     
     function handleChange(e, index, type) {
-        if(type === 'multiple'){
-            const payerDetailsArray = [];
-            const updatedItems = usersExpense.map((u, i) => {
-                const updatedUser = (i === index) ? { ...u, spend: parseFloat(e.target.value) } : { ...u };
-                  payerDetailsArray.push(updatedUser);
-                return updatedUser;
-              });
-            setPayerDetails(payerDetailsArray);
-            setUsersExpense(updatedItems);
-            const totalSum = updatedItems.reduce((sum, item) => sum + item.spend, 0);
-            if (totalSum === parseFloat(amount)) {
-                setButtonVisibility(true);
-            } else {
-                setButtonVisibility(false);
-            }
-        } else if(type === 'single'){
+        console.log(users);
+        if (type === 'multiple') {
+        const value = parseFloat(e.target.value) || 0;
+        const updatedItems = usersExpense.map((u, i) =>
+            i === index ? { ...u, spend: value } : u
+        );
+        setUsersExpense(updatedItems);
+
+        const totalSum = updatedItems.reduce((sum, item) => sum + (item.spend || 0), 0);
+        setButtonVisibility(totalSum === parseFloat(amount)); // enable save only if total matches
+    }else if(type === 'single'){
             const updatedItems = usersExpense.map((u, i) => {
                 const updatedUser = i === index ? { ...u, spend: parseFloat(e.target.value) } : { ...u, spend: 0 };
                 if (i === index) {
@@ -140,7 +185,9 @@ export default function AddExpenseModal({ isModalOpen, closeModal, users, groupC
                                 <button
                                     type="button"
                                     className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
-                                    onClick={closeModal}
+                                    onClick={() => {
+                                        handleCloseModal();
+                                    }}
                                 >
                                     <svg
                                         className="w-3 h-3"
@@ -161,6 +208,11 @@ export default function AddExpenseModal({ isModalOpen, closeModal, users, groupC
                                 </button>
                             </div>
                             <div className="p-4 md:p-5">
+                            {errorMessage && (
+    <p className="text-red-600 dark:text-red-400 text-sm mb-2 px-2 py-1 bg-red-50 dark:bg-red-900 rounded">
+        {errorMessage}
+    </p>
+)}
                                 <div className="grid gap-4 mb-4 grid-cols-2">
                                     <div className="col-span-2">
                                         <label
@@ -175,6 +227,7 @@ export default function AddExpenseModal({ isModalOpen, closeModal, users, groupC
                                             id="description"
                                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                             placeholder="What for?"
+                                            value={description}
                                             onChange={(e) => setDescription(e.target.value)}
                                             required
                                         />
@@ -192,6 +245,7 @@ export default function AddExpenseModal({ isModalOpen, closeModal, users, groupC
                                             id="amount"
                                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                             placeholder="How much?"
+                                            value={amount}
                                             onWheel={(e) => e.target.blur()}                                            
                                             onChange={(e) => {
                                                 
@@ -210,9 +264,97 @@ export default function AddExpenseModal({ isModalOpen, closeModal, users, groupC
                                             required
                                         />
                                     </div>
-
                                 </div>
-                                <div className='w-[60%] my-4 mx-0 flex w-full justify-between'>Paid by<a className="text-blue-700" onClick={togglePayerModal}>{(payerDetails.length > 1) ? "multiple" : (user.userId === payerDetails.id) ? "you"  : payerDetails.name.split(" ")[0]}</a> split <a className="text-blue-700" onClick={toggleShareModal}>between</a></div>
+                                <div className="w-full flex justify-center my-4">
+  <div className="w-[90%] flex justify-between items-start gap-8">
+  <div className="flex flex-col items-center mt-3">
+  <button
+                                    onClick={addExpense}
+                                    className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                >
+                                    <svg
+                                        className="me-1 -ms-1 w-5 h-5"
+                                        fill="currentColor"
+                                        viewBox="0 0 20 20"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                        <path
+                                            fillRule="evenodd"
+                                            d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                                            clipRule="evenodd"
+                                        ></path>
+                                    </svg>
+                                    Add
+                                </button>
+    </div>
+    {/* Left Column */}
+    <div className="flex flex-col items-center">
+      <span className="text-gray-700 dark:text-gray-300 font-medium mb-1">Paid by</span>
+      <button
+        onClick={togglePayerModal}
+        className="px-4 py-1 bg-blue-100 text-blue-700 rounded-full font-medium hover:bg-blue-200 dark:bg-blue-700 dark:text-white dark:hover:bg-blue-600 transition"
+      >
+        {(Array.isArray(payerDetails) && payerDetails.length > 1)
+          ? "Multiple"
+          : user.userId === payerDetails.id
+          ? "You"
+          : payerDetails.name.split(" ")[0]}
+      </button>
+    </div>
+
+    {/* Right Column: Split between */}
+<div className="flex flex-col items-center">
+  <span className="text-gray-700 dark:text-gray-300 font-medium mb-1">Split in</span>
+  <button
+    onClick={toggleShareModal}
+    className="flex items-center px-4 py-1 bg-green-100 dark:bg-green-700 text-green-700 dark:text-white rounded-full font-medium hover:bg-green-200 dark:hover:bg-green-600 border border-gray-300 dark:border-gray-600 transition"
+  >
+    {(() => {
+      const involved = usersExpense.filter(u => (u.spend || u.share) > 0);
+      const count = involved.length;
+
+      if (count === 0) {
+        return <span className="text-sm px-2">None</span>;
+      }
+
+      if (count <= 2) {
+        return involved.map((u, index) => (
+          <img
+            key={index}
+            src={u.profilePic || '/default-profile.png'}
+            alt={u.name}
+            title={u.name}
+            className="w-6 h-6 rounded-full border-2 border-white dark:border-gray-800 -ml-2 first:ml-0 object-cover"
+          />
+        ));
+      } else {
+        const firstTwo = involved.slice(0, 2);
+        const remainingCount = count - 2;
+        return (
+          <>
+            {firstTwo.map((u, index) => (
+              <img
+                key={index}
+                src={u.profilePic || '/default-profile.png'}
+                alt={u.name}
+                title={u.name}
+                className="w-6 h-6 rounded-full border-2 border-white dark:border-gray-800 -ml-2 first:ml-0 object-cover"
+              />
+            ))}
+            <div className="w-6 h-6 rounded-full bg-gray-400 dark:bg-gray-600 text-white text-xs flex items-center justify-center -ml-2 border-2 border-white dark:border-gray-800">
+              +{remainingCount}
+            </div>
+          </>
+        );
+      }
+    })()}
+  </button>
+</div>
+
+
+
+  </div>
+</div>
 
                                 {payerModal && (
                                     <div id="select-modal" tabIndex="-1" aria-hidden="true" className="fixed inset-0 z-50 overflow-y-auto overflow-x-hidden flex items-center justify-center w-full h-[calc(100%-1rem)] max-h-full">
@@ -222,7 +364,15 @@ export default function AddExpenseModal({ isModalOpen, closeModal, users, groupC
                                                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                                                         Select Payers
                                                     </h3>
-                                                    <button type="button" className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="select-modal" onClick={togglePayerModal}>
+                                                    <button type="button" className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="select-modal" onClick={() => {
+                                                        setPayerDetails({
+                                                            id: user.userId,
+                                                            name: user.name,
+                                                            spend: 0,
+                                                            share: null
+                                                        });
+                                                        togglePayerModal();
+                                                        }}>
                                                         <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
                                                             <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
                                                         </svg>
@@ -298,6 +448,17 @@ export default function AddExpenseModal({ isModalOpen, closeModal, users, groupC
                                                                     </li>
                                                                 )})}
                                                             </ul>
+                                                            <div className={`w-full text-center py-2 mt-4 rounded ${balanceBg}`}>
+    <p className="text-sm font-semibold">
+    INR {totalSpend.toFixed(2)} of INR {parseFloat(amount).toFixed(2)}
+    </p>
+    <p className="text-sm font-semibold">
+        {remaining >= 0 ? `INR ${remaining.toFixed(2)} left` : `INR ${Math.abs(remaining).toFixed(2)} over`}
+    </p>
+</div>
+
+
+
                                                         </div>
                                                     </div>
                                                     {buttonVisibility ?
@@ -418,7 +579,7 @@ export default function AddExpenseModal({ isModalOpen, closeModal, users, groupC
                                         </div>
                                    
                                 )}
-                                <button
+                                {/* <button
                                     onClick={addExpense}
                                     className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                 >
@@ -435,7 +596,7 @@ export default function AddExpenseModal({ isModalOpen, closeModal, users, groupC
                                         ></path>
                                     </svg>
                                     Add
-                                </button>
+                                </button> */}
 
                             </div>
                         </div>
