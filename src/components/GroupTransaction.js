@@ -404,7 +404,7 @@ export default function GroupTransaction() {
                     (transaction.transactionType === "expense" || transaction.transactionType === null) ?
                       <SingleExpenseCard key={transaction.id} expense={transaction} sendExpenseDetails={handleExpenseDetails} setDeleteExpenseApiCall={setDeleteExpenseApiCall} deleteExpenseApiCall={deleteExpenseApiCall} />
                       :
-                      <SettlementCard key={transaction.id} expense={transaction} sendExpenseDetails={handleExpenseDetails} />
+                      <SettlementCard key={transaction.id} expense={transaction} sendExpenseDetails={handleExpenseDetails} setDeleteExpenseApiCall={setDeleteExpenseApiCall} deleteExpenseApiCall={deleteExpenseApiCall} />
                   )) :
                   <div className="flex flex-col justify-center items-center text-gray-500 dark:text-gray-400 font-medium">
                     <img src="../add-expense.svg" alt="Add expense img" className="h-24 w-24" />

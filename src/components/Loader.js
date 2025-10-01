@@ -4,7 +4,7 @@ export default function Loader() {
   const elements = ["💰", "💵"];
 
   return (
-    <div className="relative w-full h-32 flex justify-center items-end overflow-hidden">
+    <div className="relative w-full h-96 flex justify-center items-center overflow-hidden">
       <style>{`
         @keyframes floatUp {
           0% { transform: translateY(30px) scale(0.8); opacity: 0; }
