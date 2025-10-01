@@ -49,7 +49,7 @@ export default function SettleUpModal({ isModalOpen, closeModal, members, groupC
       .then((response) => {
         setIsSettleAPICall((isSettleAPICall) => !isSettleAPICall);
         closeModal();
-        
+
       })
       .catch((error) => {
         console.error(error);
@@ -131,13 +131,13 @@ export default function SettleUpModal({ isModalOpen, closeModal, members, groupC
                       ))}
                     </Dropdown>
                     <div>
-                    <img
-                      src="../money.png"
-                      alt="Send money direction"
-                      className="h-12 w-12"
-                    />
+                      <img
+                        src="../money.png"
+                        alt="Send money direction"
+                        className="h-12 w-12"
+                      />
                     </div>
-                    
+
 
                     {/* Receiver Dropdown */}
                     <Dropdown

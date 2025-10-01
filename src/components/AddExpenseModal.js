@@ -62,6 +62,7 @@ export default function AddExpenseModal({ isModalOpen, closeModal, users, groupC
         setUsersExpense(users.map(u => ({
             id: u.user.userId,
             name: u.user.name,
+            profilePic: u.user.photo,
             spend: null,
             share: null,
             profilePic: u.user.profilePic || '/default-profile.png',

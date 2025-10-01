@@ -15,15 +15,15 @@ export const AuthProvider = ({ children }) => {
         const authStatus = localStorage.getItem('isAuthenticated');
         const user = JSON.parse(localStorage.getItem('userDetails'));
 
-        
-        
+
+
 
         if (authStatus === 'true') {
             setIsAuthenticated(true);
             setUser(user);
-          }
+        }
         setLoading(false);
-      }, []);
+    }, []);
     // const [sessionId, setSessionId] = useState(null);
 
     // Method to log in and set session ID
@@ -31,8 +31,8 @@ export const AuthProvider = ({ children }) => {
         return new Promise(async (resolve, reject) => {
             try {
                 var userdetails = await getUserDetailsApi();
-                
-                
+
+
                 setUser(userdetails.data);
                 setIsAuthenticated(true);
                 localStorage.setItem('userDetails', JSON.stringify(userdetails.data));
@@ -43,7 +43,7 @@ export const AuthProvider = ({ children }) => {
             }
         });
     };
-    
+
 
     // Method to log out
     const logout = () => {
@@ -54,7 +54,7 @@ export const AuthProvider = ({ children }) => {
 
     };
     return (
-        <AuthContext.Provider value={{ isAuthenticated, user, login, logout , loading}}>
+        <AuthContext.Provider value={{ isAuthenticated, user, login, logout, loading }}>
             {children}
         </AuthContext.Provider>
     );

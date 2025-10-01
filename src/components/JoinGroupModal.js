@@ -1,26 +1,26 @@
 import React, { useState } from 'react';
 import { joinGroupApi } from './Api';
 
-export default function JoinGroupModal({isModalOpen,closeModal}) {
+export default function JoinGroupModal({ isModalOpen, closeModal }) {
 
-    const [groupCode,setGroupCode] = useState('');
+    const [groupCode, setGroupCode] = useState('');
 
-    const[error, setError] = useState(null);
+    const [error, setError] = useState(null);
 
     function joinGroup() {
-        
-        
-        if(groupCode !== '') {
+
+
+        if (groupCode !== '') {
             joinGroupApi(groupCode)
-            .then((response) => {
-                
-                closeModal();
-            })
-            .catch((error) => setError(error.response.data.message.split(": ")[1]))
+                .then((response) => {
+
+                    closeModal();
+                })
+                .catch((error) => setError(error.response.data.message.split(": ")[1]))
         } else {
             setError('Group code cannot be empty')
         }
-     
+
     }
 
     return (
@@ -41,9 +41,9 @@ export default function JoinGroupModal({isModalOpen,closeModal}) {
                                 <button
                                     type="button"
                                     className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
-                                    onClick={()=>{
+                                    onClick={() => {
                                         closeModal();
-                                        if(error!=null)  
+                                        if (error != null)
                                             setError(null)
                                     }}
                                 >
@@ -65,7 +65,7 @@ export default function JoinGroupModal({isModalOpen,closeModal}) {
                                     <span className="sr-only">Close modal</span>
                                 </button>
                             </div>
-                            {error != null && <div style ={{color:"red"}} className=''>{error}</div>}
+                            {error != null && <div style={{ color: "red" }} className=''>{error}</div>}
                             <div className="p-4 md:p-5">
                                 <div className="grid gap-4 mb-4 grid-cols-2">
                                     <div className="col-span-2">
@@ -81,12 +81,12 @@ export default function JoinGroupModal({isModalOpen,closeModal}) {
                                             id="groupCode"
                                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                             placeholder="Enter Group Code"
-                                            onChange={(e)=>
-                                                {setGroupCode(e.target.value);
-                                                  if(error!=null)  
+                                            onChange={(e) => {
+                                                setGroupCode(e.target.value);
+                                                if (error != null)
                                                     setError(null)
-                                                }
-                                             }
+                                            }
+                                            }
                                             required
                                         />
                                     </div>

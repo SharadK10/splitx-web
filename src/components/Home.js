@@ -8,33 +8,35 @@ const Home = () => {
 
       {/* Hero Section */}
       <section className="flex-1 flex items-center justify-center bg-gradient-to-r from-blue-100 to-purple-100 w-full">
-        
+
         <div className="text-center max-w-xl px-4 flex flex-col items-center justify-center h-screen">
 
 
-        <h1 class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">Effortlessly <mark class="px-4 py-1 mb-1 tracking-wide inline-block align-bottom text-white bg-blue-500 rounded-lg dark:bg-blue-500 animate-bounce"><div class="mb-2">split</div></mark> Expenses</h1>
-<p class="text-lg font-normal text-gray-500 lg:text-xl dark:text-gray-400">Keep track, settle up, and stay organized with our simple expense-sharing app.</p>
+          <h1 class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">Effortlessly <mark class="px-4 py-1 mb-1 tracking-wide inline-block align-bottom text-white bg-blue-500 rounded-lg dark:bg-blue-500 animate-bounce"><div class="mb-2">split</div></mark> Expenses</h1>
+          <p class="text-lg font-normal text-gray-500 lg:text-xl dark:text-gray-400">Keep track, settle up, and stay organized with our simple expense-sharing app.</p>
 
-<a 
-  href="https://www.producthunt.com/posts/splitin?embed=true&utm_source=badge-featured&utm_medium=badge&utm_source=badge-splitin" 
-  target="_blank" 
-  rel="noopener noreferrer"
-  style={{ 
-    position: 'fixed', 
-    bottom: '20px', 
-    right: '20px', 
-    zIndex: 1000 
-  }}
->
-  <img 
-    src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=841422&theme=light&t=1738767463855" 
-    alt="SplitIn - Effortlessly Split Expenses | Product Hunt" 
-    style={{ width: '250px', height: '54px', maxWidth: '30vw', 
-      transition: 'width 0.3s ease, height 0.3s ease' }} 
-    width="250" 
-    height="54" 
-  />
-</a>
+          <a
+            href="https://www.producthunt.com/posts/splitin?embed=true&utm_source=badge-featured&utm_medium=badge&utm_source=badge-splitin"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              position: 'fixed',
+              bottom: '20px',
+              right: '20px',
+              zIndex: 1000
+            }}
+          >
+            <img
+              src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=841422&theme=light&t=1738767463855"
+              alt="SplitIn - Effortlessly Split Expenses | Product Hunt"
+              style={{
+                width: '250px', height: '54px', maxWidth: '30vw',
+                transition: 'width 0.3s ease, height 0.3s ease'
+              }}
+              width="250"
+              height="54"
+            />
+          </a>
 
 
           {/* <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900">

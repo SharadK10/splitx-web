@@ -15,10 +15,14 @@ export function SingleGroupCard({ group, openEditModal, openGroupLogModal }) {
 
         {/* Main content */}
         <div className="w-full flex flex-col gap-1">
-          <div className="text-base flex items-center justify-between gap-2">
-            <a className="flex-1 overflow-hidden text-ellipsis" href={groupUrl}>
+          <div className="w-80 text-base flex items-center justify-between gap-2">
+            <a
+              className="flex-1 break-words whitespace-normal"
+              href={groupUrl}
+            >
               {group.groupName}
             </a>
+
           </div>
 
           <div className="text-muted-foreground font-normal text-xs">
@@ -109,7 +113,7 @@ export function SingleGroupCard({ group, openEditModal, openGroupLogModal }) {
                 <ul className="py-2 text-sm divide-y divide-gray-100 dark:divide-gray-600">
                   <li>
                     <button
-                      onClick={() => {toggleDropdown(); openEditModal(group)}}
+                      onClick={() => { toggleDropdown(); openEditModal(group) }}
                       className="block w-full text-left px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600"
                     >
                       Edit

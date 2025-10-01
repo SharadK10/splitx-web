@@ -7,28 +7,28 @@ export const apiClient = axios.create(
         headers: {
             'Content-Type': 'application/json',
             "ngrok-skip-browser-warning": "69420",
-          },
-          withCredentials : true
+        },
+        withCredentials: true
     },
-    
+
 );
 // Add a response interceptor
 apiClient.interceptors.response.use(
     (response) => {
         return response;
-    }, 
-    async(error) => {
+    },
+    async (error) => {
         // Check if the error response status is 401 or 403
         if (error.response && (error.message === "Request failed with status code 401")) {
             localStorage.removeItem('isAuthenticated', 'true');
             localStorage.removeItem('userDetails');
-            window.location.href =  process.env.REACT_APP_CLIENT + '/login?logout';
-        } 
+            window.location.href = process.env.REACT_APP_CLIENT + '/login?logout';
+        }
         return new Promise((resolve, reject) => {
             setTimeout(() => {
-              reject(error);
+                reject(error);
             }, 400);
-          });
+        });
     }
 );
 
@@ -38,23 +38,23 @@ export function retriveAllGroupsApi() {
 }
 
 export function createGroupApi(groupName) {
-    return apiClient.post("/api/create-group", {groupName:groupName})
+    return apiClient.post("/api/create-group", { groupName: groupName })
 }
 
 export function joinGroupApi(groupCode) {
-    return apiClient.post("/api/join-group", {groupCode:groupCode})
+    return apiClient.post("/api/join-group", { groupCode: groupCode })
 }
 
 export function getGroupTransactions(groupCode) {
-    return apiClient.get("/api/group/"+groupCode);
+    return apiClient.get("/api/group/" + groupCode);
 }
 
 export function getGroupUsers(groupCode) {
-    return apiClient.get("/api/group/"+groupCode+"/users");
+    return apiClient.get("/api/group/" + groupCode + "/users");
 }
 
 export function addExpenseApi(requestBody) {
-    return apiClient.post("/api/add-expense" ,requestBody   );
+    return apiClient.post("/api/add-expense", requestBody);
 }
 
 export function getUserDetailsApi() {
@@ -66,7 +66,7 @@ export function authenticateUserApi() {
 }
 
 export function deleteExpense(id) {
-    return apiClient.put("/api/delete-transaction/"+id);
+    return apiClient.put("/api/delete-transaction/" + id);
 }
 
 export function logout() {
@@ -78,7 +78,7 @@ export function getGroupDetails(groupCode) {
 }
 
 export function editGroupApi(groupCode, groupName) {
-    return apiClient.put("/api/group/" + groupCode + "/edit", {groupName:groupName});
+    return apiClient.put("/api/group/" + groupCode + "/edit", { groupName: groupName });
 }
 
 export function getGroupLogsApi(groupCode) {
