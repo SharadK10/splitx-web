@@ -68,8 +68,8 @@ export function SingleSimplifiedExpenseCard({
                 }}
                 key={index}
                 className={`flex justify-between items-center p-3 rounded-lg border font-medium cursor-pointer transition-colors duration-200 ${isGive
-                    ? "bg-red-50 border-red-200 dark:bg-red-900/30 dark:border-red-700 text-red-700 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/20"
-                    : "bg-green-50 border-green-200 dark:bg-green-900/30 dark:border-green-700 text-green-700 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/20"
+                  ? "bg-red-50 border-red-200 dark:bg-red-900/30 dark:border-red-700 text-red-700 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/20"
+                  : "bg-green-50 border-green-200 dark:bg-green-900/30 dark:border-green-700 text-green-700 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/20"
                   }`}
               >
                 <span className="text-sm flex items-center gap-2">
