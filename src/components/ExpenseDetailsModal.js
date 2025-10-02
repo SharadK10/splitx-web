@@ -1,6 +1,6 @@
 import { deleteExpense } from "./Api";
 
-export default function ExpenseDetailsModal({ closeModal, expenseDetails, deleteExpenseApiCall, setDeleteExpenseApiCall }) {
+export default function ExpenseDetailsModal({ closeModal, expenseDetails, group, deleteExpenseApiCall, setDeleteExpenseApiCall }) {
     const details = expenseDetails.userTransactions;
     let totalExpense = 0;
     details.forEach(txn => totalExpense += txn.spent);
@@ -12,7 +12,8 @@ export default function ExpenseDetailsModal({ closeModal, expenseDetails, delete
 
     function handleDeleteExpense() {
         const txnId = expenseDetails.id;
-        deleteExpense(txnId)
+        const groupCode = group.groupCode;
+        deleteExpense(groupCode, txnId)
             .then(() => {
                 setDeleteExpenseApiCall(prev => !prev);
             })
@@ -44,7 +45,7 @@ export default function ExpenseDetailsModal({ closeModal, expenseDetails, delete
 
                     {/* Body */}
                     <div className="p-4 md:p-5 space-y-4">
-                        <ul className="space-y-6">
+                        <ul className="space-y-6 max-h-40">
                             {details.map((txn, index) => {
                                 const spent = txn.spent;
                                 const share = txn.myShare;
@@ -95,13 +96,14 @@ export default function ExpenseDetailsModal({ closeModal, expenseDetails, delete
 
                                         {/* Name button */}
                                         <div
-                                            className="relative w-[30%] mx-auto px-2 text-center bg-gray-200 dark:bg-gray-400 rounded-full z-10 cursor-pointer select-none"
+                                            className="min-h-8 relative w-[30%] mx-auto px-2 bg-gray-200 dark:bg-gray-400 rounded-full z-10 cursor-pointer select-none flex items-center justify-center"
                                             style={{ wordBreak: "break-word" }}
                                         >
-                                            <p className="text-sm font-medium text-gray-900 dark:text-white">
-                                                {txn.user.name}
+                                            <p className="text-sm font-medium text-gray-900 dark:text-white text-center">
+                                                {txn.user.name.split(" ")[0]}
                                             </p>
                                         </div>
+
 
                                         {/* Amounts */}
                                         <div className="absolute left-2 top-0 text-red-800 dark:text-red-800 text-sm font-semibold z-20">

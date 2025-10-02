@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "./AuthContext";
 import { deleteExpense } from "./Api";
 
-export function SingleExpenseCard({ expense, sendExpenseDetails, setDeleteExpenseApiCall, deleteExpenseApiCall }) {
+export function SingleExpenseCard({ expense, group, sendExpenseDetails, setDeleteExpenseApiCall, deleteExpenseApiCall }) {
   const [owed, setOwed] = useState(0);
   const [involved, setInvolved] = useState(true);
   const [isActive, setIsActive] = useState(false);
@@ -32,12 +32,13 @@ export function SingleExpenseCard({ expense, sendExpenseDetails, setDeleteExpens
 
   function handleExpenseDetailsToggle() {
 
-    sendExpenseDetails(expense);
+    sendExpenseDetails(expense, group);
   }
 
   function handleDeleteExpense() {
     const txnId = expense.id;
-    deleteExpense(txnId).then((res) => {
+    const groupCode = group.groupCode;
+    deleteExpense(groupCode, txnId).then((res) => {
       console.log("Successfully deleted expense");
       setDeleteExpenseApiCall(!deleteExpenseApiCall);
     }).catch(console.error());

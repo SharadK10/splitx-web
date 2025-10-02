@@ -65,8 +65,9 @@ export function authenticateUserApi() {
     return apiClient.get("/api/user/");
 }
 
-export function deleteExpense(id) {
-    return apiClient.put("/api/delete-transaction/" + id);
+export function deleteExpense(code, id) {
+    console.log(code, id);
+    return apiClient.put("/api/delete-transaction/" + code + "/" + id);
 }
 
 export function logout() {
@@ -83,6 +84,10 @@ export function editGroupApi(groupCode, groupName) {
 
 export function getGroupLogsApi(groupCode) {
     return apiClient.get("/api/group/" + groupCode + "/get-logs")
+}
+
+export function getGroupTransactionsLogsApi(groupCode) {
+    return apiClient.get("/api/group/" + groupCode + "/get-transaction-logs")
 }
 
 

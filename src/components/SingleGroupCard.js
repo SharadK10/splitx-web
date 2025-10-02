@@ -54,7 +54,7 @@ export function SingleGroupCard({ group, openEditModal, openGroupLogModal }) {
         {/* Top-right controls */}
         <div className="absolute top-3 right-3 flex items-center gap-2">
           {/* Profile pictures */}
-          <div className="flex -space-x-3">
+          {/* <div className="flex -space-x-3">
             {group.users.slice(0, 3).map((member, index) => (
               <img
                 key={index}
@@ -69,7 +69,7 @@ export function SingleGroupCard({ group, openEditModal, openGroupLogModal }) {
                 +{group.users.length - 3}
               </div>
             )}
-          </div>
+          </div> */}
 
           {/* Gray info icon */}
           <button onClick={() => openGroupLogModal(group)}

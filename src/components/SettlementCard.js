@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "./AuthContext";
 import { deleteExpense } from "./Api";
 
-export function SettlementCard({ expense, setDeleteExpenseApiCall, deleteExpenseApiCall }) {
+export function SettlementCard({ expense, group, setDeleteExpenseApiCall, deleteExpenseApiCall }) {
   const [settlementAmount, setSettlementAmount] = useState(0);
   const [payer, setPayer] = useState(null)
   const [receiver, setReceiver] = useState(null)
@@ -28,7 +28,8 @@ export function SettlementCard({ expense, setDeleteExpenseApiCall, deleteExpense
 
   function handleDeleteExpense() {
     const txnId = expense.id;
-    deleteExpense(txnId).then((res) => {
+    const groupCode = group.groupCode;
+    deleteExpense(groupCode, txnId).then((res) => {
       console.log("Successfully deleted expense");
       setDeleteExpenseApiCall(!deleteExpenseApiCall);
     }).catch(console.error());

@@ -5,6 +5,7 @@ import AddExpenseModal from "./AddExpenseModal";
 import { SingleExpenseCard } from "./SingleExpenseCard";
 import ReactCardFlip from "react-card-flip";
 import { Dropdown, CopyClipboard } from "flowbite";
+import GroupTransactionsLogModal from "./GroupTransactionsLogModal";
 
 import {
   prepareUIPerspectiveResponse,
@@ -35,6 +36,7 @@ export default function GroupTransaction() {
 
   const [deleteExpenseApiCall, setDeleteExpenseApiCall] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isLogModalOpen, setIsLogModalOpen] = useState(false);
 
   const openModal = () => setAddExpenseModalState(true);
   const closeModal = () => setAddExpenseModalState(false);
@@ -49,7 +51,8 @@ export default function GroupTransaction() {
     setExpenseDetailsModalState(false);
   }
 
-  const handleExpenseDetails = (details) => {
+  const handleExpenseDetails = (details, group) => {
+    setGroup(group)
     setExpenseDetails(details);
   }
 
@@ -137,6 +140,7 @@ export default function GroupTransaction() {
   useEffect(() => {
     fetchGroupDetails();
     fetchData();
+    console.log("txn...", transactions);
   }, [addExpenseModalState, isSettleAPICall, deleteExpenseApiCall]);
 
 
@@ -225,6 +229,13 @@ export default function GroupTransaction() {
 
   return (
     <>
+      <GroupTransactionsLogModal
+        isModalOpen={isLogModalOpen}
+        group={group}
+        closeModal={() => {
+          setIsLogModalOpen(false);
+        }}
+      />
       <div className="flex flex-row justify-between m-4">
         <button
           onClick={openModal}
@@ -253,11 +264,12 @@ export default function GroupTransaction() {
         <ExpenseDetailsModal
           closeModal={closeModalExpense}
           expenseDetails={expenseDetails}
+          group={group}
           deleteExpenseApiCall={deleteExpenseApiCall}
           setDeleteExpenseApiCall={setDeleteExpenseApiCall} />
       )}
       <ReactCardFlip isFlipped={isFlipped} flipDirection="horizontal">
-        <div className={`transition-all ${(addExpenseModalState || expenseDetailsModalState) ? 'blur-sm' : ''}`}>
+        <div className={`transition-all ${(addExpenseModalState || expenseDetailsModalState || isLogModalOpen) ? 'blur-sm' : ''}`}>
           <div className="w-full max-w-lg p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-gray-800 dark:border-gray-700">
             <div className="flex justify-between items-start w-full">
               {/* Group Name */}
@@ -281,48 +293,60 @@ export default function GroupTransaction() {
                   </div>
                 )}
               </div>
-              <button
-                id="dropdownButton"
-                data-dropdown-toggle="dropdown"
-                class="text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                type="button"
-              >
-                <svg
-                  width="24px"
-                  height="24px"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
+
+              <div className="flex justify-end items-center space-x-2">
+                <button
+                  onClick={() => setIsLogModalOpen(true)}
+                  className="flex items-center justify-center rounded-full bg-gray-200 text-gray-700 h-5 w-5 hover:bg-gray-300"
+                  type="button"
                 >
-                  <path
-                    d="M9 12C9 13.3807 7.88071 14.5 6.5 14.5C5.11929 14.5 4 13.3807 4 12C4 10.6193 5.11929 9.5 6.5 9.5C7.88071 9.5 9 10.6193 9 12Z"
-                    stroke="#1C274C"
-                    stroke-width="1.5"
-                  />
-                  <path
-                    d="M14 6.5L9 10"
-                    stroke="#1C274C"
-                    stroke-width="1.5"
-                    stroke-linecap="round"
-                  />
-                  <path
-                    d="M14 17.5L9 14"
-                    stroke="#1C274C"
-                    stroke-width="1.5"
-                    stroke-linecap="round"
-                  />
-                  <path
-                    d="M19 18.5C19 19.8807 17.8807 21 16.5 21C15.1193 21 14 19.8807 14 18.5C14 17.1193 15.1193 16 16.5 16C17.8807 16 19 17.1193 19 18.5Z"
-                    stroke="#1C274C"
-                    stroke-width="1.5"
-                  />
-                  <path
-                    d="M19 5.5C19 6.88071 17.8807 8 16.5 8C15.1193 8 14 6.88071 14 5.5C14 4.11929 15.1193 3 16.5 3C17.8807 3 19 4.11929 19 5.5Z"
-                    stroke="#1C274C"
-                    stroke-width="1.5"
-                  />
-                </svg>
-              </button>
+                  <span className="italic font-serif text-sm">i</span>
+                </button>
+
+                <button
+                  id="dropdownButton"
+                  data-dropdown-toggle="dropdown"
+                  className="text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  type="button"
+                >
+                  <svg
+                    width="24px"
+                    height="24px"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M9 12C9 13.3807 7.88071 14.5 6.5 14.5C5.11929 14.5 4 13.3807 4 12C4 10.6193 5.11929 9.5 6.5 9.5C7.88071 9.5 9 10.6193 9 12Z"
+                      stroke="#1C274C"
+                      strokeWidth="1.5"
+                    />
+                    <path
+                      d="M14 6.5L9 10"
+                      stroke="#1C274C"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                    />
+                    <path
+                      d="M14 17.5L9 14"
+                      stroke="#1C274C"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                    />
+                    <path
+                      d="M19 18.5C19 19.8807 17.8807 21 16.5 21C15.1193 21 14 19.8807 14 18.5C14 17.1193 15.1193 16 16.5 16C17.8807 16 19 17.1193 19 18.5Z"
+                      stroke="#1C274C"
+                      strokeWidth="1.5"
+                    />
+                    <path
+                      d="M19 5.5C19 6.88071 17.8807 8 16.5 8C15.1193 8 14 6.88071 14 5.5C14 4.11929 15.1193 3 16.5 3C17.8807 3 19 4.11929 19 5.5Z"
+                      stroke="#1C274C"
+                      strokeWidth="1.5"
+                    />
+                  </svg>
+                </button>
+              </div>
+
               <div
                 id="dropdownMenu"
                 class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
@@ -402,9 +426,9 @@ export default function GroupTransaction() {
                 {transactions.length > 0 ?
                   transactions.map((transaction) => (
                     (transaction.transactionType === "expense" || transaction.transactionType === null) ?
-                      <SingleExpenseCard key={transaction.id} expense={transaction} sendExpenseDetails={handleExpenseDetails} setDeleteExpenseApiCall={setDeleteExpenseApiCall} deleteExpenseApiCall={deleteExpenseApiCall} />
+                      <SingleExpenseCard key={transaction.id} expense={transaction} group={group} sendExpenseDetails={handleExpenseDetails} setDeleteExpenseApiCall={setDeleteExpenseApiCall} deleteExpenseApiCall={deleteExpenseApiCall} />
                       :
-                      <SettlementCard key={transaction.id} expense={transaction} sendExpenseDetails={handleExpenseDetails} setDeleteExpenseApiCall={setDeleteExpenseApiCall} deleteExpenseApiCall={deleteExpenseApiCall} />
+                      <SettlementCard key={transaction.id} expense={transaction} group={group} sendExpenseDetails={handleExpenseDetails} setDeleteExpenseApiCall={setDeleteExpenseApiCall} deleteExpenseApiCall={deleteExpenseApiCall} />
                   )) :
                   <div className="flex flex-col justify-center items-center text-gray-500 dark:text-gray-400 font-medium">
                     <img src="../add-expense.svg" alt="Add expense img" className="h-24 w-24" />
@@ -414,7 +438,7 @@ export default function GroupTransaction() {
               </ul>)}
           </div>
         </div>
-        <div className={`transition-all ${(addExpenseModalState || expenseDetailsModalState) ? 'blur-sm' : ''}`}>
+        <div className={`transition-all ${(addExpenseModalState || expenseDetailsModalState || isLogModalOpen) ? 'blur-sm' : ''}`}>
           <SimplifiedExpenseComponent allSettlements={allSettlements} groupCode={groupCode} isSettleAPICall={isSettleAPICall} setIsSettleAPICall={setIsSettleAPICall} group={group} />
         </div>
       </ReactCardFlip>

@@ -55,6 +55,8 @@ export default function SettleUpModal({
       groupCode,
       description: "Settlement",
       settlementType: "settlement",
+      amount: settlementAmount,
+      operation: "settlement",
       userId_0: selectedPayer.userId,
       userSpent_0: settlementAmount,
       userShare_0: 0,

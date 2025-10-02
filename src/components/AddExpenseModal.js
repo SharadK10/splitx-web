@@ -85,12 +85,16 @@ export default function AddExpenseModal({ isModalOpen, closeModal, users, groupC
         var requestJson = {};
         requestJson["groupCode"] = groupCode;
         requestJson["description"] = description;
+        requestJson["createdBy"] = user.userId;
+        requestJson["amount"] = amount;
         usersExpense.map((data, index) => {
             requestJson["userId_" + index] = data.id;
             requestJson["userSpent_" + index] = (data.spend == null) ? 0 : data.spend;
             requestJson["userShare_" + index] = (data.share == null) ? 0 : data.share;
             return null;
         });
+        console.log("add-expense-request", requestJson);
+        console.log("user", user);
         const totalSpendSum = usersExpense.reduce((sum, item) => sum + item.share, 0);
         const totalShareSum = usersExpense.reduce((sum, item) => sum + item.spend, 0);
 
@@ -118,6 +122,7 @@ export default function AddExpenseModal({ isModalOpen, closeModal, users, groupC
         const updatedUsers = usersExpense.map((u) => ({
             ...u,
             checked: true,
+            profilePic: u.user.photo,
             share: parseFloat(amount) / usersExpense.length, // equal by default
         }));
         setSplitEqually(true)
