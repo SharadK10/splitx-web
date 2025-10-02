@@ -52,13 +52,13 @@ export function SettlementCard({ expense, setDeleteExpenseApiCall, deleteExpense
                     <button className="px-3 py-1 bg-gray-100 text-gray-600 rounded-full font-medium text-xs dark:bg-gray-700 dark:text-gray-300">
                       {user.userId === payer.userId ? "You" : payer.name.split(" ")[0]}
                     </button>
-                    <div className="text-red-700 font-light">------</div>
+                    <div className="text-red-700 font-light">----</div>
 
                     {/* Amount Button */}
                     <button className="px-3 py-1 bg-green-100 text-green-700 rounded-full font-medium text-xs hover:bg-green-200 dark:bg-green-700 dark:text-white dark:hover:bg-green-600 transition">
                       {formattedOwed}
                     </button>
-                    <div className="text-green-700 font-light">------</div>
+                    <div className="text-green-700 font-light">----</div>
 
                     {/* Receiver Button */}
                     <button className="px-3 py-1 bg-gray-100 text-gray-600 rounded-full font-medium text-xs dark:bg-gray-700 dark:text-gray-300">
