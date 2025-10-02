@@ -78,7 +78,9 @@ export default function ListGroups() {
       setGroups(sortedGroupList)
     })
       .catch((err) => console.error(err))
-      .finally(() => setLoading(false)); // stop loading;
+      .finally(() => {
+        setLoading(false)
+      }); // stop loading;
   }
 
   return (

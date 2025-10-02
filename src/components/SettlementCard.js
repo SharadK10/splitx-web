@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "./AuthContext";
 import { deleteExpense } from "./Api";
 
-export function SettlementCard({ expense, setDeleteExpenseApiCall, deleteExpenseApiCall  }) {
+export function SettlementCard({ expense, setDeleteExpenseApiCall, deleteExpenseApiCall }) {
   const [settlementAmount, setSettlementAmount] = useState(0);
   const [payer, setPayer] = useState(null)
   const [receiver, setReceiver] = useState(null)
@@ -42,23 +42,23 @@ export function SettlementCard({ expense, setDeleteExpenseApiCall, deleteExpense
             <div class="w-full flex flex-col gap-1">
               <div class="text-base flex gap-2 justify-between">
                 <button
-                  class="flex flex-1 overflow-hidden text-ellipsis"
+                  class="flex flex-1 overflow-hidden text-ellipsis text-sm md:flex hidden"
                   disabled>
                   {expense.transactionDescription}
                 </button>
-                <div className="flex flex-col justify-center items-center">
+                <div className="flex flex-col justify-center items-center md:justify-start">
                   <div className="flex items-center mt-1">
                     {/* Payer Button */}
                     <button className="px-3 py-1 bg-gray-100 text-gray-600 rounded-full font-medium text-xs dark:bg-gray-700 dark:text-gray-300">
                       {user.userId === payer.userId ? "You" : payer.name.split(" ")[0]}
                     </button>
-
-                    
+                    <div className="text-red-700 font-light">------</div>
 
                     {/* Amount Button */}
                     <button className="px-3 py-1 bg-green-100 text-green-700 rounded-full font-medium text-xs hover:bg-green-200 dark:bg-green-700 dark:text-white dark:hover:bg-green-600 transition">
                       {formattedOwed}
                     </button>
+                    <div className="text-green-700 font-light">------</div>
 
                     {/* Receiver Button */}
                     <button className="px-3 py-1 bg-gray-100 text-gray-600 rounded-full font-medium text-xs dark:bg-gray-700 dark:text-gray-300">
@@ -67,49 +67,49 @@ export function SettlementCard({ expense, setDeleteExpenseApiCall, deleteExpense
                   </div>
                 </div>
                 <div className="relative">
-                <button
-                  id={btnId}
-                  className={`flex items-center justify-center rounded-md text-sm font-medium 
+                  <button
+                    id={btnId}
+                    className={`flex items-center justify-center rounded-md text-sm font-medium 
                           h-8 w-8 ${isActive ? 'border border-gray-200' : ''} 
                           hover:bg-accent hover:text-accent-foreground`}
-                  type="button"
-                  onClick={toggleDropdown}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 4 16"
-                    fill="currentColor"
-                    className="w-4 h-4"
+                    type="button"
+                    onClick={toggleDropdown}
                   >
-                    <circle cx="2" cy="2" r="2"></circle>
-                    <circle cx="2" cy="8" r="2"></circle>
-                    <circle cx="2" cy="14" r="2"></circle>
-                  </svg>
-                </button>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 4 16"
+                      fill="currentColor"
+                      className="w-4 h-4"
+                    >
+                      <circle cx="2" cy="2" r="2"></circle>
+                      <circle cx="2" cy="8" r="2"></circle>
+                      <circle cx="2" cy="14" r="2"></circle>
+                    </svg>
+                  </button>
 
-                {/* Dropdown menu */}
-                {isActive && (
-                  <div
-                    id={menuId}
-                    className="absolute right-0 mt-2 z-20 w-44 bg-white dark:bg-gray-700 
+                  {/* Dropdown menu */}
+                  {isActive && (
+                    <div
+                      id={menuId}
+                      className="absolute right-0 mt-2 z-20 w-44 bg-white dark:bg-gray-700 
                            rounded-lg border border-gray-200 dark:border-gray-700 shadow-lg"
-                  >
-                    <ul className="py-2 text-sm divide-y divide-gray-100 dark:divide-gray-600">
-                      <li>
-                        <button
-                          onClick={() => { toggleDropdown(); handleDeleteExpense(); }}
-                          className="block w-full text-left px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600"
-                        >
-                          Delete
-                        </button>
-                      </li>
-                    </ul>
-                  </div>
-                )}
-              </div>
-                
+                    >
+                      <ul className="py-2 text-sm divide-y divide-gray-100 dark:divide-gray-600">
+                        <li>
+                          <button
+                            onClick={() => { toggleDropdown(); handleDeleteExpense(); }}
+                            className="block w-full text-left px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600"
+                          >
+                            Delete
+                          </button>
+                        </li>
+                      </ul>
+                    </div>
+                  )}
+                </div>
+
               </div>
               <div class="text-muted-foreground font-normal text-xs">
                 <div class="w-full flex items-center justify-between">
