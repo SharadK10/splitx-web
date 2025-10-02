@@ -4,6 +4,9 @@ import SettleUpModal from "./SettleUpModal";
 
 export default function SimplifiedExpenseComponent({ allSettlements, groupCode, isSettleAPICall, setIsSettleAPICall, group }) {
   const [settleUpModalStatus, setSettleUpModalStatus] = useState(false);
+  const [settleUpPayer, setSettleUpPayer] = useState(null);
+  const [settleUpReceiver, setSettleUpReceiver] = useState(null);
+  const [settleUpAmount, setSettleUpAmount] = useState(0);
 
   const members = allSettlements.map((settlement) => settlement.mainUser);
 
@@ -11,11 +14,16 @@ export default function SimplifiedExpenseComponent({ allSettlements, groupCode, 
     setSettleUpModalStatus(!settleUpModalStatus);
   }
 
-
+  function closeSettleUpModal() {
+    setSettleUpPayer(null)
+    setSettleUpReceiver(null)
+    setSettleUpAmount(0);
+    setSettleUpModalStatus(false);
+  }
 
   return (
     <>
-      <SettleUpModal isModalOpen={settleUpModalStatus} closeModal={toggleSettleUpModal} members={members} groupCode={groupCode} isSettleAPICall={isSettleAPICall} setIsSettleAPICall={setIsSettleAPICall} />
+      <SettleUpModal isModalOpen={settleUpModalStatus} closeModal={closeSettleUpModal} members={members} groupCode={groupCode} isSettleAPICall={isSettleAPICall} setIsSettleAPICall={setIsSettleAPICall} initialPayer={settleUpPayer} initialReceiver={settleUpReceiver} initialAmount={settleUpAmount} />
       <div className={`transition-all ${settleUpModalStatus ? 'blur-sm' : ''}`}>
         <div class="w-full max-w-lg p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-gray-800 dark:border-gray-700">
           <div className="flex justify-between items-start w-full">
@@ -33,7 +41,7 @@ export default function SimplifiedExpenseComponent({ allSettlements, groupCode, 
           </p>
           <ul class="my-4 space-y-3 h-96 overflow-y-scroll">
             {allSettlements.map((settlement) => (
-              <SingleSimplifiedExpenseCard settlement={settlement} />
+              <SingleSimplifiedExpenseCard settlement={settlement} setSettleUpPayer={setSettleUpPayer} setSettleUpReceiver={setSettleUpReceiver} setSettleUpAmount={setSettleUpAmount} openSettleUpModal={toggleSettleUpModal} closeSettleUpModal={closeSettleUpModal} />
             ))}
           </ul>
         </div>

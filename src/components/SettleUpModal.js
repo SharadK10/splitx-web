@@ -1,12 +1,28 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dropdown } from "flowbite-react";
 import { addExpenseApi } from "./Api";
 
-export default function SettleUpModal({ isModalOpen, closeModal, members, groupCode, isSettleAPICall, setIsSettleAPICall }) {
-  const [selectedPayer, setSelectedPayer] = useState(null);
-  const [selectedReceiver, setSelectedReceiver] = useState(null);
+export default function SettleUpModal({
+  isModalOpen,
+  closeModal,
+  members,
+  groupCode,
+  isSettleAPICall,
+  setIsSettleAPICall,
+  initialPayer,
+  initialReceiver,
+  initialAmount
+}) {
+  const [selectedPayer, setSelectedPayer] = useState(initialPayer);
+  const [selectedReceiver, setSelectedReceiver] = useState(initialReceiver);
   const [error, setError] = useState(null);
-  const [settlementAmount, setSettlementAmount] = useState(0);
+  const [settlementAmount, setSettlementAmount] = useState(initialAmount);
+
+  useEffect(() => {
+    setSelectedPayer(initialPayer);
+    setSelectedReceiver(initialReceiver);
+    setSettlementAmount(initialAmount);
+  }, [initialPayer, initialReceiver, initialAmount, isModalOpen]);
 
   function handlePayerChange(member) {
     if (selectedReceiver && member.userId === selectedReceiver.userId) {
@@ -15,8 +31,10 @@ export default function SettleUpModal({ isModalOpen, closeModal, members, groupC
     } else {
       setError(null);
       setSelectedPayer(member);
+      console.log(member);
     }
   }
+
 
   function handleReceiverChange(member) {
     if (selectedPayer && member.userId === selectedPayer.userId) {
@@ -189,6 +207,7 @@ export default function SettleUpModal({ isModalOpen, closeModal, members, groupC
                       id="settle"
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                       placeholder="Enter Settlement Amount"
+                      value={settlementAmount == 0 ? '' : settlementAmount}
                       onWheel={(e) => e.target.blur()}
                       onChange={handleSettleAmount}
                       required
