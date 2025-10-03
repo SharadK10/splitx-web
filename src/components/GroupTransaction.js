@@ -277,7 +277,7 @@ export default function GroupTransaction() {
                 {!group ? null : group.groupName}
               </h5>
               {/* --- Added stacked profile pictures --- */}
-              <div className="flex -space-x-2">
+              <div className="hidden sm:flex -space-x-2">
                 {group?.users?.slice(0, 3).map((member, index) => (
                   <img
                     key={index}
