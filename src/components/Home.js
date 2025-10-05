@@ -59,7 +59,7 @@ const Home = () => {
         <div className="mt-12 flex flex-wrap justify-center lg:justify-between gap-4">
           <FeatureCard title="Easy Tracking" description="Track your expenses in real-time with minimal effort." />
           <FeatureCard title="Simple Settling" description="Easily settle debts with friends in just a few clicks." />
-          <FeatureCard title="Secure Payments" description="Your payments are safe with top-notch security measures." />
+          <FeatureCard title="Minimal & Free" description="No fancy charts or paywall bullshit." />
         </div>
       </section>
 
@@ -86,9 +86,9 @@ const Home = () => {
         </div> */}
         <h2 className="text-2xl md:text-3xl font-bold text-gray-900">How It Works.</h2>
         <div className="mt-12 flex flex-wrap justify-center lg:justify-between gap-8">
-          <FeatureCard title="Create a Group" description="Start by creating a group with your friends or family." />
+          <FeatureCard title="Create a Group" description="Start by creating a group with your friends." />
           <FeatureCard title="Add Expenses" description="Add expenses as you go, and we'll keep everything organized." />
-          <FeatureCard title="Settle Up" description="Settle up when you're ready, with our secure payment options." />
+          <FeatureCard title="Settle Up" description="Settle up effortlessly when you're ready." />
         </div>
       </section>
 
