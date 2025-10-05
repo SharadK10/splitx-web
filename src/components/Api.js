@@ -66,7 +66,6 @@ export function authenticateUserApi() {
 }
 
 export function deleteExpense(code, id) {
-    console.log(code, id);
     return apiClient.put("/api/delete-transaction/" + code + "/" + id);
 }
 

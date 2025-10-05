@@ -93,8 +93,6 @@ export default function AddExpenseModal({ isModalOpen, closeModal, users, groupC
             requestJson["userShare_" + index] = (data.share == null) ? 0 : data.share;
             return null;
         });
-        console.log("add-expense-request", requestJson);
-        console.log("user", user);
         const totalSpendSum = usersExpense.reduce((sum, item) => sum + item.share, 0);
         const totalShareSum = usersExpense.reduce((sum, item) => sum + item.spend, 0);
 

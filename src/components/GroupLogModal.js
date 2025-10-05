@@ -10,7 +10,6 @@ export default function GroupLogModal({ isModalOpen, group, closeModal }) {
   useEffect(() => {
     setCurrentGroup(group);
     getGroupLogs(group)
-    console.log(groupLogs);
   }, [group]); // runs whenever modal opens or group changes
 
   function getGroupLogs(group) {

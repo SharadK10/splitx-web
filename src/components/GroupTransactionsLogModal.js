@@ -10,7 +10,6 @@ export default function GroupTransactionsLogModal({ isModalOpen, group, closeMod
   useEffect(() => {
     setCurrentGroup(group);
     getGroupTransactionsLogs(group)
-    //console.log(groupLogs);
   }, [group]); // runs whenever modal opens or group changes
 
   function getGroupTransactionsLogs(group) {
@@ -18,7 +17,6 @@ export default function GroupTransactionsLogModal({ isModalOpen, group, closeMod
       setIsLoading(true);
       getGroupTransactionsLogsApi(group.groupCode).then((res) => {
         setLogs(res.data);
-        console.log(res);
       })
         .catch((e) => console.log("Error in fetching group logs"))
         .finally(setIsLoading(false))

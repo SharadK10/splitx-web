@@ -31,7 +31,6 @@ export default function ListGroups() {
 
   const openEditModal = (group) => {
     setCurrentGroup(group);
-    //console.log(group);
     setIsEditModalOpen(true);
   }
 
@@ -74,7 +73,6 @@ export default function ListGroups() {
         }
         return maxDate;
       });
-      //console.log(sortedGroupList);
       setGroups(sortedGroupList)
     })
       .catch((err) => console.error(err))

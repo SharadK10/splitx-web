@@ -140,7 +140,6 @@ export default function GroupTransaction() {
   useEffect(() => {
     fetchGroupDetails();
     fetchData();
-    console.log("txn...", transactions);
   }, [addExpenseModalState, isSettleAPICall, deleteExpenseApiCall]);
 
 

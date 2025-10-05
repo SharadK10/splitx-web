@@ -31,7 +31,6 @@ export default function SettleUpModal({
     } else {
       setError(null);
       setSelectedPayer(member);
-      console.log(member);
     }
   }
 
