@@ -117,10 +117,11 @@ export default function AddExpenseModal({ isModalOpen, closeModal, users, groupC
     }
 
     const openShareModal = () => {
+        //console.log(usersExpense);
         const updatedUsers = usersExpense.map((u) => ({
             ...u,
             checked: true,
-            profilePic: u.user.photo,
+            profilePic: u.profilePic,
             share: parseFloat(amount) / usersExpense.length, // equal by default
         }));
         setSplitEqually(true)
