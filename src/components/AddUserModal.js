@@ -17,6 +17,7 @@ export default function AddExpenseModal({ isModalOpen, closeModal }) {
     }
     setErrorMessage("");
     //api to save temp users
+    //sharad
     setTempUsers([""]);
     handleCloseModal();
     return;

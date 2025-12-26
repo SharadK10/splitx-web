@@ -3,6 +3,7 @@ import { useState } from "react";
 export function SingleGroupCard({ group, openEditModal, openGroupLogModal }) {
   const groupUrl = "/groups/" + group.groupCode;
   const [isActive, setIsActive] = useState(false);
+  const [showConfirmDelete, setShowConfirmDelete] = useState(false);
 
   const btnId = `dropdownButton-${group.groupCode}`;
   const menuId = `dropdownMenu-${group.groupCode}`;
@@ -12,17 +13,12 @@ export function SingleGroupCard({ group, openEditModal, openGroupLogModal }) {
   return (
     <li>
       <div className="relative inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-secondary-foreground hover:bg-secondary/80 px-4 h-fit w-full py-3 rounded-lg border bg-card shadow-sm text-base">
-
         {/* Main content */}
         <div className="w-full flex flex-col gap-1">
           <div className="w-80 text-base flex items-center justify-between gap-2">
-            <a
-              className="flex-1 break-words whitespace-normal"
-              href={groupUrl}
-            >
+            <a className="flex-1 break-words whitespace-normal" href={groupUrl}>
               {group.groupName}
             </a>
-
           </div>
 
           <div className="text-muted-foreground font-normal text-xs">
@@ -45,7 +41,13 @@ export function SingleGroupCard({ group, openEditModal, openGroupLogModal }) {
                   <line x1="8" x2="8" y1="2" y2="6"></line>
                   <line x1="3" x2="21" y1="10" y2="10"></line>
                 </svg>
-                <span>{new Date(group.groupCreateDate).toLocaleDateString().split(', ')[0]}</span>
+                <span>
+                  {
+                    new Date(group.groupCreateDate)
+                      .toLocaleDateString()
+                      .split(", ")[0]
+                  }
+                </span>
               </div>
             </div>
           </div>
@@ -72,7 +74,8 @@ export function SingleGroupCard({ group, openEditModal, openGroupLogModal }) {
           </div> */}
 
           {/* Gray info icon */}
-          <button onClick={() => openGroupLogModal(group)}
+          <button
+            onClick={() => openGroupLogModal(group)}
             className="flex items-center justify-center rounded-full bg-gray-200 text-gray-700 h-5 w-5 hover:bg-gray-300"
             type="button"
           >
@@ -84,7 +87,7 @@ export function SingleGroupCard({ group, openEditModal, openGroupLogModal }) {
             <button
               id={btnId}
               className={`flex items-center justify-center rounded-md text-sm font-medium 
-                          h-8 w-8 ${isActive ? 'border border-gray-200' : ''} 
+                          h-8 w-8 ${isActive ? "border border-gray-200" : ""} 
                           hover:bg-accent hover:text-accent-foreground`}
               type="button"
               onClick={toggleDropdown}
@@ -113,10 +116,24 @@ export function SingleGroupCard({ group, openEditModal, openGroupLogModal }) {
                 <ul className="py-2 text-sm divide-y divide-gray-100 dark:divide-gray-600">
                   <li>
                     <button
-                      onClick={() => { toggleDropdown(); openEditModal(group) }}
+                      onClick={() => {
+                        toggleDropdown();
+                        openEditModal(group);
+                      }}
                       className="block w-full text-left px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600"
                     >
                       Edit
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => {
+                        toggleDropdown();
+                        setShowConfirmDelete(true);
+                      }}
+                      className="block w-full text-left px-4 py-2 text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-600"
+                    >
+                      Delete
                     </button>
                   </li>
                 </ul>
@@ -125,6 +142,41 @@ export function SingleGroupCard({ group, openEditModal, openGroupLogModal }) {
           </div>
         </div>
       </div>
+      {showConfirmDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg w-full max-w-sm">
+            <div className="px-4 py-3 border-b dark:border-gray-700">
+              <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
+                Delete Group?
+              </h3>
+            </div>
+
+            <div className="px-4 py-4 text-sm text-gray-700 dark:text-gray-300">
+              This cannot be undone. Are you sure you want to delete this group?
+            </div>
+
+            <div className="px-4 py-3 flex justify-end gap-3 border-t dark:border-gray-700">
+              <button
+                className="px-4 py-2 rounded-lg border text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                onClick={() => setShowConfirmDelete(false)}
+              >
+                Cancel
+              </button>
+
+              <button
+                className="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700"
+                onClick={() => {
+                  setShowConfirmDelete(false);
+                  //sharad
+                  console.log("Delete Clicked — TODO integrate API");
+                }}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </li>
   );
 }

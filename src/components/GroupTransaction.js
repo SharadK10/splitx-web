@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { getGroupTransactions, getGroupUsers, getGroupDetails } from "./Api";
 import AddExpenseModal from "./AddExpenseModal";
 import AddUserModal from "./AddUserModal";
@@ -19,6 +19,7 @@ import Footer from "./Footer";
 import Loader from "./Loader";
 
 export default function GroupTransaction() {
+  const navigate = useNavigate();
   const location = useLocation();
   const groupCode = location.pathname.split("/")[2];
   const [transactions, setTransactions] = useState([]);
@@ -236,10 +237,29 @@ export default function GroupTransaction() {
           setIsLogModalOpen(false);
         }}
       />
-      <div className="flex flex-row justify-between m-4">
+      <div className="flex flex-row justify-between m-4 gap-2">
+        <button
+          onClick={() => navigate("/groups")}
+          className="flex items-center text-blue-700 dark:text-blue-400 border border-blue-700 dark:border-blue-400 px-2.5 py-2.5 rounded-lg text-sm hover:bg-blue-100 dark:hover:bg-blue-800"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="w-5 h-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 19l-7-7 7-7"
+            />
+          </svg>
+        </button>
         <button
           onClick={openUserModal}
-          className="block mr-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          className="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
           type="button"
         >
           Add Members
@@ -253,7 +273,7 @@ export default function GroupTransaction() {
         </button>
         <button
           onClick={toggleSimplifiedExpense}
-          className="w-48 ml-2 block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          className="w-48 block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
           type="button"
         >
           {simplifiedExpenseState ? "Group Expense" : "Simplified Settlemets"}

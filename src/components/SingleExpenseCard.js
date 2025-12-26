@@ -2,19 +2,26 @@ import { useEffect, useState } from "react";
 import { useAuth } from "./AuthContext";
 import { deleteExpense } from "./Api";
 
-export function SingleExpenseCard({ expense, group, sendExpenseDetails, setDeleteExpenseApiCall, deleteExpenseApiCall }) {
+export function SingleExpenseCard({
+  expense,
+  group,
+  sendExpenseDetails,
+  setDeleteExpenseApiCall,
+  deleteExpenseApiCall,
+}) {
   const [owed, setOwed] = useState(0);
   const [involved, setInvolved] = useState(true);
   const [isActive, setIsActive] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const btnId = `dropdownButton-${expense.id}`;
   const menuId = `dropdownMenu-${expense.id}`;
 
   const toggleDropdown = () => setIsActive(!isActive);
 
-  const formattedOwed = new Intl.NumberFormat('en-IN', {
-    style: 'currency',
-    currency: 'INR',
+  const formattedOwed = new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
   }).format(owed);
 
   const user = useAuth().user;
@@ -23,26 +30,31 @@ export function SingleExpenseCard({ expense, group, sendExpenseDetails, setDelet
     expense.userTransactions.forEach((txn) => {
       if (txn.user.userId === user.userId) {
         setOwed(parseInt(txn.spent) - parseInt(txn.myShare));
-        if (owed === 0 && parseInt(txn.spent) === 0 && parseInt(txn.myShare) === 0) {
+        if (
+          owed === 0 &&
+          parseInt(txn.spent) === 0 &&
+          parseInt(txn.myShare) === 0
+        ) {
           setInvolved(false);
         }
       }
-    })
+    });
     // eslint-disable-next-line
-  }, [])
+  }, []);
 
   function handleExpenseDetailsToggle() {
-
     sendExpenseDetails(expense, group);
   }
 
   function handleDeleteExpense() {
     const txnId = expense.id;
     const groupCode = group.groupCode;
-    deleteExpense(groupCode, txnId).then((res) => {
-      console.log("Successfully deleted expense");
-      setDeleteExpenseApiCall(!deleteExpenseApiCall);
-    }).catch(console.error());
+    deleteExpense(groupCode, txnId)
+      .then((res) => {
+        console.log("Successfully deleted expense");
+        setDeleteExpenseApiCall(!deleteExpenseApiCall);
+      })
+      .catch(console.error());
   }
 
   return (
@@ -76,8 +88,10 @@ export function SingleExpenseCard({ expense, group, sendExpenseDetails, setDelet
               )}
 
               {owed === 0 && (
-                <button className="px-3 py-1 bg-gray-100 text-gray-600 rounded-full font-medium text-xs dark:bg-gray-700 dark:text-gray-300"
-                  onClick={handleExpenseDetailsToggle}>
+                <button
+                  className="px-3 py-1 bg-gray-100 text-gray-600 rounded-full font-medium text-xs dark:bg-gray-700 dark:text-gray-300"
+                  onClick={handleExpenseDetailsToggle}
+                >
                   {involved ? "Settled Up" : "Not Involved"}
                 </button>
               )}
@@ -85,7 +99,7 @@ export function SingleExpenseCard({ expense, group, sendExpenseDetails, setDelet
                 <button
                   id={btnId}
                   className={`flex items-center justify-center rounded-md text-sm font-medium 
-                          h-8 w-8 ${isActive ? 'border border-gray-200' : ''} 
+                          h-8 w-8 ${isActive ? "border border-gray-200" : ""} 
                           hover:bg-accent hover:text-accent-foreground`}
                   type="button"
                   onClick={toggleDropdown}
@@ -114,7 +128,10 @@ export function SingleExpenseCard({ expense, group, sendExpenseDetails, setDelet
                     <ul className="py-2 text-sm divide-y divide-gray-100 dark:divide-gray-600">
                       <li>
                         <button
-                          onClick={() => { toggleDropdown(); handleDeleteExpense(); }}
+                          onClick={() => {
+                            toggleDropdown();
+                            setShowConfirm(true);
+                          }}
                           className="block w-full text-left px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600"
                         >
                           Delete
@@ -140,17 +157,68 @@ export function SingleExpenseCard({ expense, group, sendExpenseDetails, setDelet
                     stroke-linejoin="round"
                     class="w-3 h-3 inline mx-1"
                   >
-                    <rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect>
+                    <rect
+                      width="18"
+                      height="18"
+                      x="3"
+                      y="4"
+                      rx="2"
+                      ry="2"
+                    ></rect>
                     <line x1="16" x2="16" y1="2" y2="6"></line>
                     <line x1="8" x2="8" y1="2" y2="6"></line>
                     <line x1="3" x2="21" y1="10" y2="10"></line>
                   </svg>
-                  <span>{new Date(expense.createdDate).toLocaleDateString().split(', ')[0]}</span>
+                  <span>
+                    {
+                      new Date(expense.createdDate)
+                        .toLocaleDateString()
+                        .split(", ")[0]
+                    }
+                  </span>
                 </div>
               </div>
             </div>
           </div>
         </div>
+        {showConfirm && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg w-full max-w-sm">
+              {/* Header */}
+              <div className="px-4 py-3 border-b dark:border-gray-700">
+                <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
+                  Delete Expense?
+                </h3>
+              </div>
+
+              {/* Body */}
+              <div className="px-4 py-4 text-sm text-gray-700 dark:text-gray-300">
+                This action cannot be undone. Are you sure you want to delete
+                this expense?
+              </div>
+
+              {/* Footer Buttons */}
+              <div className="px-4 py-3 flex justify-end gap-3 border-t dark:border-gray-700">
+                <button
+                  className="px-4 py-2 rounded-lg border text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  onClick={() => setShowConfirm(false)}
+                >
+                  Cancel
+                </button>
+
+                <button
+                  className="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700"
+                  onClick={() => {
+                    setShowConfirm(false);
+                    handleDeleteExpense();
+                  }}
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </li>
     </>
   );
