@@ -20,7 +20,7 @@ export function SingleExpenseCard({ expense, group, sendExpenseDetails, setDelet
   const user = useAuth().user;
 
   useEffect(() => {
-    expense.userTransactions.map((txn) => {
+    expense.userTransactions.forEach((txn) => {
       if (txn.user.userId === user.userId) {
         setOwed(parseInt(txn.spent) - parseInt(txn.myShare));
         if (owed === 0 && parseInt(txn.spent) === 0 && parseInt(txn.myShare) === 0) {
@@ -28,6 +28,7 @@ export function SingleExpenseCard({ expense, group, sendExpenseDetails, setDelet
         }
       }
     })
+    // eslint-disable-next-line
   }, [])
 
   function handleExpenseDetailsToggle() {

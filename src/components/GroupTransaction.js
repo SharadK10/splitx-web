@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { getGroupTransactions, getGroupUsers, getGroupDetails } from "./Api";
 import AddExpenseModal from "./AddExpenseModal";
+import AddUserModal from "./AddUserModal";
 import { SingleExpenseCard } from "./SingleExpenseCard";
 import ReactCardFlip from "react-card-flip";
 import { Dropdown, CopyClipboard } from "flowbite";
@@ -24,12 +25,14 @@ export default function GroupTransaction() {
   const [users, setUsers] = useState([]);
   const [group, setGroup] = useState(null);
   const [addExpenseModalState, setAddExpenseModalState] = useState(false);
+  const [addUserModalState, setAddUserModalState] = useState(false);
   const [simplifiedExpenseState, setSimplifiedExpenseState] = useState(false);
   const [allSettlements, setAllSettlements] = useState([]);
 
   const [isFlipped, setIsFlipped] = useState(false);
   const [expenseDetails, setExpenseDetails] = useState();
-  const [expenseDetailsModalState, setExpenseDetailsModalState] = useState(false);
+  const [expenseDetailsModalState, setExpenseDetailsModalState] =
+    useState(false);
   const [joinGroupURL, setJoinGroupURL] = useState("");
 
   const [isSettleAPICall, setIsSettleAPICalls] = useState(false);
@@ -41,10 +44,13 @@ export default function GroupTransaction() {
   const openModal = () => setAddExpenseModalState(true);
   const closeModal = () => setAddExpenseModalState(false);
 
+  const openUserModal = () => setAddUserModalState(true);
+  const closeUserModal = () => setAddUserModalState(false);
+
   const toggleSimplifiedExpense = () => {
     setSimplifiedExpenseState(!simplifiedExpenseState);
     setIsFlipped(!isFlipped);
-  }
+  };
 
   function closeModalExpense() {
     setExpenseDetails(null);
@@ -52,9 +58,9 @@ export default function GroupTransaction() {
   }
 
   const handleExpenseDetails = (details, group) => {
-    setGroup(group)
+    setGroup(group);
     setExpenseDetails(details);
-  }
+  };
 
   const fetchGroupDetails = async () => {
     try {
@@ -63,8 +69,7 @@ export default function GroupTransaction() {
     } catch (e) {
       console.log("Error in fetching group details", e);
     }
-  }
-
+  };
 
   const fetchData = async () => {
     try {
@@ -85,11 +90,12 @@ export default function GroupTransaction() {
         }
 
         const sortedTxnList = sortByDate(txnList, (txn) => {
-          return txn.updatedDate ? new Date(txn.updatedDate) : new Date(txn.createdDate);
+          return txn.updatedDate
+            ? new Date(txn.updatedDate)
+            : new Date(txn.createdDate);
         });
         setTransactions(sortedTxnList);
         const transaction = response.data;
-
 
         const repayments = transaction.map((data) => {
           return data.repayments;
@@ -107,13 +113,11 @@ export default function GroupTransaction() {
         };
         // [ [], [] ] 2D array into 1D array
         var allRepayemnts = [];
-        repayments.map((data) => {
-          data.map((d) => {
-            allRepayemnts.push(d);
-          });
-        });
+        repayments.forEach((data) =>
+          data.forEach((d) => allRepayemnts.push(d))
+        );
 
-        allRepayemnts.map((data) => {
+        allRepayemnts.forEach((data) => {
           addPayments(data.from.userId, data.from, -1 * data.amount);
           addPayments(data.to.userId, data.to, data.amount);
         });
@@ -121,10 +125,8 @@ export default function GroupTransaction() {
         const result = simplifyExpenseAlgo(netPayments);
         const result2 = prepareUIPerspectiveResponse(result, user);
         setAllSettlements(result2);
-
-      })
-    }
-    catch (error) {
+      });
+    } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
       setIsLoading(false);
@@ -135,20 +137,26 @@ export default function GroupTransaction() {
     if (expenseDetails != null) {
       setExpenseDetailsModalState(true);
     }
-  }, [expenseDetails])
+  }, [expenseDetails]);
 
   useEffect(() => {
     fetchGroupDetails();
     fetchData();
-  }, [addExpenseModalState, isSettleAPICall, deleteExpenseApiCall]);
-
+    // eslint-disable-next-line
+  }, [
+    addUserModalState,
+    addExpenseModalState,
+    isSettleAPICall,
+    deleteExpenseApiCall,
+  ]);
 
   const setIsSettleAPICall = (res) => {
     setIsSettleAPICalls(res);
   };
 
   useEffect(() => {
-    const buildJoinGroupURL = process.env.REACT_APP_CLIENT + "/join-group/" + groupCode;
+    const buildJoinGroupURL =
+      process.env.REACT_APP_CLIENT + "/join-group/" + groupCode;
     setJoinGroupURL(buildJoinGroupURL);
     // Set the dropdown menu element
     const $targetEl = document.getElementById("dropdownMenu");
@@ -162,15 +170,9 @@ export default function GroupTransaction() {
       offsetDistance: 10,
       delay: 300,
       ignoreClickOutsideClass: false,
-      onHide: () => {
-
-      },
-      onShow: () => {
-
-      },
-      onToggle: () => {
-
-      },
+      onHide: () => {},
+      onShow: () => {},
+      onToggle: () => {},
     };
     // Instance options object
     const instanceOptions = {
@@ -203,7 +205,6 @@ export default function GroupTransaction() {
       contentType: "input",
       htmlEntities: false, // infinite
       onCopy: () => {
-
         document.getElementById("default-message").classList.add("hidden");
         document.getElementById("success-message").classList.remove("hidden");
       },
@@ -224,7 +225,7 @@ export default function GroupTransaction() {
     $triggerClipboardEl.addEventListener("click", () => {
       clipboard.copy();
     });
-  }, []);
+  }, [groupCode]);
 
   return (
     <>
@@ -237,6 +238,13 @@ export default function GroupTransaction() {
       />
       <div className="flex flex-row justify-between m-4">
         <button
+          onClick={openUserModal}
+          className="block mr-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          type="button"
+        >
+          Add Members
+        </button>
+        <button
           onClick={openModal}
           className="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
           type="button"
@@ -245,7 +253,7 @@ export default function GroupTransaction() {
         </button>
         <button
           onClick={toggleSimplifiedExpense}
-          className="w-48 ml-4 block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          className="w-48 ml-2 block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
           type="button"
         >
           {simplifiedExpenseState ? "Group Expense" : "Simplified Settlemets"}
@@ -259,41 +267,39 @@ export default function GroupTransaction() {
           groupCode={groupCode}
         />
       )}
+      {users.length !== 0 && (
+        <AddUserModal
+          isModalOpen={addUserModalState}
+          closeModal={closeUserModal}
+          users={users}
+          groupCode={groupCode}
+        />
+      )}
       {expenseDetailsModalState && (
         <ExpenseDetailsModal
           closeModal={closeModalExpense}
           expenseDetails={expenseDetails}
           group={group}
           deleteExpenseApiCall={deleteExpenseApiCall}
-          setDeleteExpenseApiCall={setDeleteExpenseApiCall} />
+          setDeleteExpenseApiCall={setDeleteExpenseApiCall}
+        />
       )}
       <ReactCardFlip isFlipped={isFlipped} flipDirection="horizontal">
-        <div className={`transition-all ${(addExpenseModalState || expenseDetailsModalState || isLogModalOpen) ? 'blur-sm' : ''}`}>
+        <div
+          className={`transition-all ${
+            addUserModalState ||
+            addExpenseModalState ||
+            expenseDetailsModalState ||
+            isLogModalOpen
+              ? "blur-sm"
+              : ""
+          }`}
+        >
           <div className="w-full max-w-lg p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-gray-800 dark:border-gray-700">
             <div className="flex justify-between items-start w-full">
               {/* Group Name */}
-              <h5 className="text-base font-semibold text-gray-900 md:text-xl dark:text-white break-words max-w-[70%] mb-3">
+              <h5 className="flex gap-2 items-center text-base font-semibold text-gray-900 md:text-xl dark:text-white break-words max-w-[70%] mb-3">
                 {!group ? null : group.groupName}
-              </h5>
-              {/* --- Added stacked profile pictures --- */}
-              <div className="hidden sm:flex -space-x-2">
-                {group?.users?.slice(0, 3).map((member, index) => (
-                  <img
-                    key={index}
-                    src={member.user.photo || '/default-avatar.png'}
-                    alt={member.user.name || 'User'}
-                    className="w-8 h-8 rounded-full border-2 border-white dark:border-gray-700"
-                  />
-                ))}
-                {group?.users?.length > 3 && (
-                  <div className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-300 
-                        text-gray-800 text-xs font-semibold border-2 border-white dark:border-gray-700">
-                    +{group.users.length - 3}
-                  </div>
-                )}
-              </div>
-
-              <div className="flex justify-end items-center space-x-2">
                 <button
                   onClick={() => setIsLogModalOpen(true)}
                   className="flex items-center justify-center rounded-full bg-gray-200 text-gray-700 h-5 w-5 hover:bg-gray-300"
@@ -301,7 +307,28 @@ export default function GroupTransaction() {
                 >
                   <span className="italic font-serif text-sm">i</span>
                 </button>
+              </h5>
 
+              <div className="flex justify-end items-center space-x-2">
+                {/* --- Added stacked profile pictures --- */}
+                <div className="sm:flex -space-x-2">
+                  {group?.users?.slice(0, 3).map((member, index) => (
+                    <img
+                      key={index}
+                      src={member.user.photo || "/default-avatar.png"}
+                      alt={member.user.name || "User"}
+                      className="w-8 h-8 rounded-full border-2 border-white dark:border-gray-700"
+                    />
+                  ))}
+                  {group?.users?.length > 3 && (
+                    <div
+                      className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-300 
+                        text-gray-800 text-xs font-semibold border-2 border-white dark:border-gray-700"
+                    >
+                      +{group.users.length - 3}
+                    </div>
+                  )}
+                </div>
                 <button
                   id="dropdownButton"
                   data-dropdown-toggle="dropdown"
@@ -420,25 +447,65 @@ export default function GroupTransaction() {
             <p className="text-sm font-normal text-gray-500 dark:text-gray-400">
               Recent transactions
             </p>
-            {isLoading ? <Loader /> : (
+            {isLoading ? (
+              <Loader />
+            ) : (
               <ul className="my-4 space-y-3 h-96 overflow-y-scroll">
-                {transactions.length > 0 ?
-                  transactions.map((transaction) => (
-                    (transaction.transactionType === "expense" || transaction.transactionType === null) ?
-                      <SingleExpenseCard key={transaction.id} expense={transaction} group={group} sendExpenseDetails={handleExpenseDetails} setDeleteExpenseApiCall={setDeleteExpenseApiCall} deleteExpenseApiCall={deleteExpenseApiCall} />
-                      :
-                      <SettlementCard key={transaction.id} expense={transaction} group={group} sendExpenseDetails={handleExpenseDetails} setDeleteExpenseApiCall={setDeleteExpenseApiCall} deleteExpenseApiCall={deleteExpenseApiCall} />
-                  )) :
+                {transactions.length > 0 ? (
+                  transactions.map((transaction) =>
+                    transaction.transactionType === "expense" ||
+                    transaction.transactionType === null ? (
+                      <SingleExpenseCard
+                        key={transaction.id}
+                        expense={transaction}
+                        group={group}
+                        sendExpenseDetails={handleExpenseDetails}
+                        setDeleteExpenseApiCall={setDeleteExpenseApiCall}
+                        deleteExpenseApiCall={deleteExpenseApiCall}
+                      />
+                    ) : (
+                      <SettlementCard
+                        key={transaction.id}
+                        expense={transaction}
+                        group={group}
+                        sendExpenseDetails={handleExpenseDetails}
+                        setDeleteExpenseApiCall={setDeleteExpenseApiCall}
+                        deleteExpenseApiCall={deleteExpenseApiCall}
+                      />
+                    )
+                  )
+                ) : (
                   <div className="flex flex-col justify-center items-center text-gray-500 dark:text-gray-400 font-medium">
-                    <img src="../add-expense.svg" alt="Add expense img" className="h-24 w-24" />
+                    <img
+                      src="../add-expense.svg"
+                      alt="Add expense img"
+                      className="h-24 w-24"
+                    />
                     <div>No expense in this group!</div>
                     <div>Add expense to split and settle.</div>
-                  </div>}
-              </ul>)}
+                  </div>
+                )}
+              </ul>
+            )}
           </div>
         </div>
-        <div className={`transition-all ${(addExpenseModalState || expenseDetailsModalState || isLogModalOpen) ? 'blur-sm' : ''}`}>
-          <SimplifiedExpenseComponent allSettlements={allSettlements} groupCode={groupCode} isSettleAPICall={isSettleAPICall} setIsSettleAPICall={setIsSettleAPICall} group={group} />
+        <div
+          className={`transition-all ${
+            addUserModalState ||
+            addExpenseModalState ||
+            expenseDetailsModalState ||
+            isLogModalOpen
+              ? "blur-sm"
+              : ""
+          }`}
+        >
+          <SimplifiedExpenseComponent
+            allSettlements={allSettlements}
+            groupCode={groupCode}
+            isSettleAPICall={isSettleAPICall}
+            setIsSettleAPICall={setIsSettleAPICall}
+            group={group}
+          />
         </div>
       </ReactCardFlip>
       <Footer />

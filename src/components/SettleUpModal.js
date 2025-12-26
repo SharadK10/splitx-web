@@ -143,7 +143,7 @@ export default function SettleUpModal({
                           <img
                             className="w-6 h-6 me-2 rounded-full"
                             src={member.photo}
-                            alt={`${member.name}'s image`}
+                            alt={`${member.name}'s`}
                           />
                           {member.name.split(" ")[0]}
                         </Dropdown.Item>
@@ -181,7 +181,7 @@ export default function SettleUpModal({
                           <img
                             className="w-6 h-6 me-2 rounded-full"
                             src={member.photo}
-                            alt={`${member.name}'s image`}
+                            alt={`${member.name}'s`}
                           />
                           {member.name.split(" ")[0]}
                         </Dropdown.Item>
@@ -208,7 +208,7 @@ export default function SettleUpModal({
                       id="settle"
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                       placeholder="Enter Settlement Amount"
-                      value={settlementAmount == 0 ? '' : settlementAmount}
+                      value={settlementAmount === 0 ? '' : settlementAmount}
                       onWheel={(e) => e.target.blur()}
                       onChange={handleSettleAmount}
                       required

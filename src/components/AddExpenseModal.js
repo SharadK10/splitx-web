@@ -65,7 +65,6 @@ export default function AddExpenseModal({ isModalOpen, closeModal, users, groupC
             profilePic: u.user.photo,
             spend: null,
             share: null,
-            profilePic: u.user.profilePic || '/default-profile.png',
         })));
         setPayerDetails({ id: user.userId, name: user.name, spend: 0, share: null });
         setErrorMessage('');
@@ -479,7 +478,7 @@ export default function AddExpenseModal({ isModalOpen, closeModal, users, groupC
                                                                             >
                                                                                 <div className="block">
                                                                                     <div className="mb-2 text-lg font-semibold">{data.name}</div>
-                                                                                    <input value={data.spend == 0 ? "" : data.spend}
+                                                                                    <input value={data.spend === 0 ? "" : data.spend}
                                                                                         onWheel={(e) => e.target.blur()} onInput={(e) => { handleChange(e, index, 'multiple'); }} type="number" id={data.userId} className="w-full block p-2.5 z-20 text-sm text-gray-900 bg-gray-50 rounded-s-lg rounded-e-lg border-e-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-e-gray-700  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500" placeholder="Enter amount" required />
                                                                                 </div>
 
@@ -618,7 +617,7 @@ export default function AddExpenseModal({ isModalOpen, closeModal, users, groupC
                                                                         <span className="mb-2 font-semibold">{user.name}</span>
                                                                         <input
                                                                             type="number"
-                                                                            value={user.share == 0 ? "" : user.share}
+                                                                            value={user.share === 0 ? "" : user.share}
                                                                             onWheel={(e) => e.target.blur()}
                                                                             onChange={(e) => handleShareAmount(e, index)}
                                                                             placeholder="Enter amount"
@@ -687,8 +686,6 @@ export default function AddExpenseModal({ isModalOpen, closeModal, users, groupC
                                         </div>
                                     </div>
                                 )}
-
-
                             </div>
                         </div>
                     </div>

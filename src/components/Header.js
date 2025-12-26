@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { logout } from "./Api";
 import { useAuth } from "./AuthContext";
-import { Popover } from 'flowbite';
+import { Popover } from "flowbite";
 
 export default function Header() {
   const location = useLocation();
@@ -13,7 +13,7 @@ export default function Header() {
     try {
       const response = await logout();
       if (response.status === 200) {
-        window.location.href = '/login?logout';
+        window.location.href = "/login?logout";
       }
     } catch (error) {
       console.error(error);
@@ -32,8 +32,8 @@ export default function Header() {
 
       if ($targetElpopover && $triggerElpopover) {
         const optionspopover = {
-          placement: 'bottom',
-          triggerType: 'hover',
+          placement: "bottom",
+          triggerType: "hover",
           offset: 10,
           // onHide: () => ,
           // onShow: () => ,
@@ -41,12 +41,17 @@ export default function Header() {
         };
 
         const instanceOptionspopover = {
-          id: 'popoverContent',
-          override: true
+          id: "popoverContent",
+          override: true,
         };
 
         // Initialize the popover
-        const popover = new Popover($targetElpopover, $triggerElpopover, optionspopover, instanceOptionspopover);
+        const popover = new Popover(
+          $targetElpopover,
+          $triggerElpopover,
+          optionspopover,
+          instanceOptionspopover
+        );
 
         // Clean up function
         return () => {
@@ -81,11 +86,12 @@ export default function Header() {
             <li>
               <a
                 href="/"
-                className={`block py-2 px-3 rounded md:p-0 ${isActive('/')
-                    ? 'text-blue-700'
-                    : 'text-gray-900 hover:bg-gray-100 md:hover:bg-transparent dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent'
-                  }`}
-                aria-current={isActive('/') ? 'page' : undefined}
+                className={`block py-2 px-3 rounded md:p-0 ${
+                  isActive("/")
+                    ? "text-blue-700"
+                    : "text-gray-900 hover:bg-gray-100 md:hover:bg-transparent dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
+                }`}
+                aria-current={isActive("/") ? "page" : undefined}
               >
                 Home
               </a>
@@ -93,11 +99,12 @@ export default function Header() {
             <li>
               <a
                 href="/groups"
-                className={`block py-2 px-3 rounded md:p-0 ${isActive('/groups')
-                    ? 'text-blue-700'
-                    : 'text-gray-900 hover:bg-gray-100 md:hover:bg-transparent dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent'
-                  }`}
-                aria-current={isActive('/groups') ? 'page' : undefined}
+                className={`block py-2 px-3 rounded md:p-0 ${
+                  isActive("/groups")
+                    ? "text-blue-700"
+                    : "text-gray-900 hover:bg-gray-100 md:hover:bg-transparent dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
+                }`}
+                aria-current={isActive("/groups") ? "page" : undefined}
               >
                 Groups
               </a>
@@ -112,13 +119,11 @@ export default function Header() {
               type="button"
               className="text-white font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
             >
-              <a href="#">
-                <img
-                  className="w-8 h-8 rounded-full"
-                  src={user.photo}
-                  alt="User Profile"
-                />
-              </a>
+              <img
+                className="w-8 h-8 rounded-full"
+                src={user.photo}
+                alt="User Profile"
+              />
             </button>
 
             <div
@@ -128,10 +133,10 @@ export default function Header() {
             >
               <div className="p-3">
                 <p className="text-base font-semibold leading-none text-gray-900 dark:text-white">
-                  <a href="#">{user.name}</a>
+                  {user.name}
                 </p>
-                <p className="mb-3 text-sm font-normal">
-                  <a href="#" className="hover:underline">{user.email}</a>
+                <p className="mb-3 text-sm font-normal hover:underline">
+                  {user.email}
                 </p>
                 <button
                   onClick={handleClick}
@@ -146,6 +151,5 @@ export default function Header() {
         )}
       </div>
     </nav>
-
   );
 }

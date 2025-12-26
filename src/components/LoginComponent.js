@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { useAuth } from "./AuthContext";
 import Footer from "./Footer";
@@ -14,9 +14,10 @@ export default function LoginComponent() {
     const location = useLocation();
 
     useEffect(() => {
-        if (location.search === '?logout') {
-            logout();
-        }
+      if (location.search === "?logout") {
+        logout();
+      }
+      // eslint-disable-next-line
     }, [location]);
 
 

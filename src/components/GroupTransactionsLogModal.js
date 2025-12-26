@@ -71,7 +71,7 @@ export default function GroupTransactionsLogModal({ isModalOpen, group, closeMod
                 {isLoading ? <Loader /> : (
                   <ul className="max-w-md divide-y text-gray-600 dark:text-gray-600 
                  max-h-40 overflow-y-auto pr-2">
-                    {logs.length == 0 &&
+                    {logs.length === 0 &&
                       <li className="py-2">No expense logs available for this group</li>}
                     {logs.map((log, idx) => (
                       <li key={idx} className="py-2">
