@@ -311,20 +311,17 @@ export default function GroupTransaction() {
 
               <div className="flex justify-end items-center space-x-2">
                 {/* --- Added stacked profile pictures --- */}
-                <div className="sm:flex -space-x-2">
+                <div className="flex items-center -space-x-1.5 sm:-space-x-2">
                   {group?.users?.slice(0, 3).map((member, index) => (
                     <img
                       key={index}
                       src={member.user.photo || "/default-avatar.png"}
                       alt={member.user.name || "User"}
-                      className="w-8 h-8 rounded-full border-2 border-white dark:border-gray-700"
+                      className="w-7 h-7 sm:w-8 sm:h-8 rounded-full border-2 border-white dark:border-gray-700"
                     />
                   ))}
                   {group?.users?.length > 3 && (
-                    <div
-                      className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-300 
-                        text-gray-800 text-xs font-semibold border-2 border-white dark:border-gray-700"
-                    >
+                    <div className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-full bg-gray-300 text-gray-800 text-xs font-semibold border-2 border-white dark:border-gray-700">
                       +{group.users.length - 3}
                     </div>
                   )}
@@ -416,7 +413,7 @@ export default function GroupTransaction() {
                           </span>
                           <span
                             id="success-message"
-                            class="hidden inline-flex items-center"
+                            class="hidden items-center"
                           >
                             <svg
                               class="w-3 h-3 text-blue-700 dark:text-blue-500 me-1.5"
