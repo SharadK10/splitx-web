@@ -12,7 +12,7 @@ export function SingleGroupCard({ group, openEditModal, openGroupLogModal }) {
 
   return (
     <li>
-      <div className="relative inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-secondary-foreground hover:bg-secondary/80 px-4 h-fit w-full py-3 rounded-lg border bg-card shadow-sm text-base">
+      <div className="relative inline-flex items-center justify-center whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-secondary-foreground hover:bg-secondary/80 px-4 h-fit w-full py-3 rounded-lg border bg-card shadow-sm text-base">
         {/* Main content */}
         <div className="w-full flex flex-col gap-1">
           <div className="w-80 text-base flex items-center justify-between gap-2">
@@ -122,7 +122,7 @@ export function SingleGroupCard({ group, openEditModal, openGroupLogModal }) {
                       }}
                       className="block w-full text-left px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600"
                     >
-                      Edit
+                      Rename
                     </button>
                   </li>
                   <li>
