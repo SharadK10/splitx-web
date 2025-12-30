@@ -11,12 +11,21 @@ export default function SettleUpModal({
   setIsSettleAPICall,
   initialPayer,
   initialReceiver,
-  initialAmount
+  initialAmount,
 }) {
   const [selectedPayer, setSelectedPayer] = useState(initialPayer);
   const [selectedReceiver, setSelectedReceiver] = useState(initialReceiver);
   const [error, setError] = useState(null);
   const [settlementAmount, setSettlementAmount] = useState(initialAmount);
+  const colors = ["#F87171", "#FBBF24", "#34D399", "#60A5FA", "#A78BFA"];
+
+  const getColorForUser = (key = "user") => {
+    let hash = 0;
+    for (let i = 0; i < key.length; i++) {
+      hash = key.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    return colors[Math.abs(hash) % colors.length];
+  };
 
   useEffect(() => {
     setSelectedPayer(initialPayer);
@@ -33,7 +42,6 @@ export default function SettleUpModal({
       setSelectedPayer(member);
     }
   }
-
 
   function handleReceiverChange(member) {
     if (selectedPayer && member.userId === selectedPayer.userId) {
@@ -68,7 +76,6 @@ export default function SettleUpModal({
       .then((response) => {
         setIsSettleAPICall((isSettleAPICall) => !isSettleAPICall);
         closeModal();
-
       })
       .catch((error) => {
         console.error(error);
@@ -123,13 +130,30 @@ export default function SettleUpModal({
                   <div className="w-full flex flex-row justify-between items-center">
                     <Dropdown
                       label={
-                        <img
-                          className="w-12 h-12 rounded-full"
-                          src={
-                            selectedPayer?.photo || "../user.png"
-                          }
-                          alt="Payer Profile"
-                        />
+                        !selectedPayer ? (
+                          <img
+                            className="w-12 h-12 rounded-full"
+                            src="../user.png"
+                            alt="Payer Profile"
+                          />
+                        ) : selectedPayer?.photo ? (
+                          <img
+                            className="w-12 h-12 rounded-full"
+                            src={selectedPayer?.photo}
+                            alt="Payer Profile"
+                          />
+                        ) : (
+                          <div
+                            className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold"
+                            style={{
+                              backgroundColor: getColorForUser(
+                                selectedPayer?.userId.toString()
+                              ),
+                            }}
+                          >
+                            {selectedPayer?.name?.charAt(0).toUpperCase()}
+                          </div>
+                        )
                       }
                       dismissOnClick={false}
                       className="mr-2"
@@ -140,11 +164,25 @@ export default function SettleUpModal({
                           onClick={() => handlePayerChange(member)}
                           className="flex items-center"
                         >
-                          <img
-                            className="w-6 h-6 me-2 rounded-full"
-                            src={member.photo}
-                            alt={`${member.name}'s`}
-                          />
+                          {member.photo ? (
+                            <img
+                              className="w-6 h-6 me-2 rounded-full"
+                              src={member.photo}
+                              alt={`${member.name}'s`}
+                            />
+                          ) : (
+                            <div
+                              className="w-6 h-6 me-2 rounded-full flex items-center justify-center text-white text-xs font-semibold"
+                              style={{
+                                backgroundColor: getColorForUser(
+                                  member.userId.toString()
+                                ),
+                              }}
+                            >
+                              {member.name.charAt(0).toUpperCase()}
+                            </div>
+                          )}
+
                           {member.name.split(" ")[0]}
                         </Dropdown.Item>
                       ))}
@@ -157,17 +195,33 @@ export default function SettleUpModal({
                       />
                     </div>
 
-
                     {/* Receiver Dropdown */}
                     <Dropdown
                       label={
-                        <img
-                          className="w-12 h-12 rounded-full"
-                          src={
-                            selectedReceiver?.photo || "../user.png"
-                          }
-                          alt="Receiver Profile"
-                        />
+                        !selectedReceiver ? (
+                          <img
+                            className="w-12 h-12 rounded-full"
+                            src="../user.png"
+                            alt="Receiver Profile"
+                          />
+                        ) : selectedReceiver?.photo ? (
+                          <img
+                            className="w-12 h-12 rounded-full"
+                            src={selectedReceiver?.photo}
+                            alt="Receiver Profile"
+                          />
+                        ) : (
+                          <div
+                            className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold"
+                            style={{
+                              backgroundColor: getColorForUser(
+                                selectedReceiver?.userId?.toString()
+                              ),
+                            }}
+                          >
+                            {selectedReceiver?.name?.charAt(0).toUpperCase()}
+                          </div>
+                        )
                       }
                       dismissOnClick={false}
                       className="ml-2"
@@ -178,11 +232,25 @@ export default function SettleUpModal({
                           onClick={() => handleReceiverChange(member)}
                           className="flex items-center"
                         >
-                          <img
-                            className="w-6 h-6 me-2 rounded-full"
-                            src={member.photo}
-                            alt={`${member.name}'s`}
-                          />
+                          {member.photo ? (
+                            <img
+                              className="w-6 h-6 me-2 rounded-full"
+                              src={member.photo}
+                              alt={`${member.name}'s`}
+                            />
+                          ) : (
+                            <div
+                              className="w-6 h-6 me-2 rounded-full flex items-center justify-center text-white text-xs font-semibold"
+                              style={{
+                                backgroundColor: getColorForUser(
+                                  member.userId.toString()
+                                ),
+                              }}
+                            >
+                              {member.name.charAt(0).toUpperCase()}
+                            </div>
+                          )}
+
                           {member.name.split(" ")[0]}
                         </Dropdown.Item>
                       ))}
@@ -191,8 +259,16 @@ export default function SettleUpModal({
 
                   {/* Selected Names */}
                   <div className="w-full flex flex-row justify-between">
-                    <div>{selectedPayer ? selectedPayer.name.split(" ")[0] : "Select Payer"}</div>
-                    <div>{selectedReceiver ? selectedReceiver.name.split(" ")[0] : "Select Receiver"}</div>
+                    <div>
+                      {selectedPayer
+                        ? selectedPayer.name.split(" ")[0]
+                        : "Select Payer"}
+                    </div>
+                    <div>
+                      {selectedReceiver
+                        ? selectedReceiver.name.split(" ")[0]
+                        : "Select Receiver"}
+                    </div>
                   </div>
 
                   {/* Settlement Amount */}
@@ -200,15 +276,14 @@ export default function SettleUpModal({
                     <label
                       htmlFor="settle"
                       className="w-full block m-2 text-sm font-medium text-gray-900 dark:text-white"
-                    >
-                    </label>
+                    ></label>
                     <input
                       type="number"
                       name="settle"
                       id="settle"
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                       placeholder="Enter Settlement Amount"
-                      value={settlementAmount === 0 ? '' : settlementAmount}
+                      value={settlementAmount === 0 ? "" : settlementAmount}
                       onWheel={(e) => e.target.blur()}
                       onChange={handleSettleAmount}
                       required

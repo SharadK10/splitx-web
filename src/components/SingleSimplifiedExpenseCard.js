@@ -4,7 +4,7 @@ export function SingleSimplifiedExpenseCard({
   setSettleUpReceiver,
   setSettleUpAmount,
   openSettleUpModal,
-  closeSettleUpModal
+  closeSettleUpModal,
 }) {
   // Calculate net amount
   const netAmount = settlement.transactionAmount.reduce((acc, txn) => {
@@ -20,8 +20,8 @@ export function SingleSimplifiedExpenseCard({
     netAmount > 0
       ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
       : netAmount < 0
-        ? "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
-        : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400";
+      ? "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
+      : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400";
 
   return (
     <li>
@@ -30,11 +30,21 @@ export function SingleSimplifiedExpenseCard({
         <div className="flex justify-between items-center mb-3">
           <h4 className="text-base font-semibold text-gray-900 dark:text-white">
             {settlement.mainUser.name}
+            {" "}
+            {settlement.mainUser.dummyUser && (
+              <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded-full text-xs font-semibold">
+                Dummy
+              </span>
+            )}
           </h4>
           <span
             className={`px-3 py-1 rounded-full font-bold text-sm ${netColor}`}
           >
-            {netAmount > 0 ? `💰 +${formattedNet}` : netAmount < 0 ? `💸 -${formattedNet}` : "Settled"}
+            {netAmount > 0
+              ? `💰 +${formattedNet}`
+              : netAmount < 0
+              ? `💸 -${formattedNet}`
+              : "Settled"}
           </span>
         </div>
 
@@ -62,22 +72,24 @@ export function SingleSimplifiedExpenseCard({
                   const isGive = data.giveOrTake === "give";
 
                   setSettleUpPayer(isGive ? settlement.mainUser : data.userObj);
-                  setSettleUpReceiver(isGive ? data.userObj : settlement.mainUser);
-                  setSettleUpAmount(data.amount)
+                  setSettleUpReceiver(
+                    isGive ? data.userObj : settlement.mainUser
+                  );
+                  setSettleUpAmount(data.amount);
                   openSettleUpModal();
                 }}
                 key={index}
-                className={`flex justify-between items-center p-3 rounded-lg border font-medium cursor-pointer transition-colors duration-200 ${isGive
-                  ? "bg-red-50 border-red-200 dark:bg-red-900/30 dark:border-red-700 text-red-700 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/20"
-                  : "bg-green-50 border-green-200 dark:bg-green-900/30 dark:border-green-700 text-green-700 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/20"
-                  }`}
+                className={`flex justify-between items-center p-3 rounded-lg border font-medium cursor-pointer transition-colors duration-200 ${
+                  isGive
+                    ? "bg-red-50 border-red-200 dark:bg-red-900/30 dark:border-red-700 text-red-700 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/20"
+                    : "bg-green-50 border-green-200 dark:bg-green-900/30 dark:border-green-700 text-green-700 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/20"
+                }`}
               >
                 <span className="text-sm flex items-center gap-2">
                   {isGive ? "💸" : "💰"} {otherName}
                 </span>
                 <span className="text-sm">{formattedAmount}</span>
               </li>
-
             );
           })}
         </ul>

@@ -29,7 +29,7 @@ function AuthenticatedRoute({ children }) {
 
 function App() {
   return (
-    <div className="App min-h-screen flex flex-col items-center justify-start md:justify-center w-full">
+    <div className="App flex flex-col items-center justify-start md:justify-center w-full">
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />

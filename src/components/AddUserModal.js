@@ -1,7 +1,12 @@
 import { useState } from "react";
+import { addTempMember } from "./Api";
 
-export default function AddExpenseModal({ isModalOpen, closeModal }) {
-  const [tempUsers, setTempUsers] = useState([""]);
+export default function AddExpenseModal({
+  isModalOpen,
+  closeModal,
+  groupCode,
+}) {
+  const [tempUsers, setTempUsers] = useState([{ name: "" }]);
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleCloseModal = () => {
@@ -9,23 +14,28 @@ export default function AddExpenseModal({ isModalOpen, closeModal }) {
   };
 
   function addUsers() {
-    const hasEmpty = tempUsers.some((u) => u.trim() === "");
+    const hasEmpty = tempUsers.some((u) => u.name.trim() === "");
 
     if (hasEmpty) {
       setErrorMessage("Fill all names or delete empty ones before submitting");
       return;
     }
     setErrorMessage("");
-    //api to save temp users
-    //sharad
-    setTempUsers([""]);
-    handleCloseModal();
+    addTempMember(groupCode, tempUsers)
+      .then(() => {
+        handleCloseModal();
+      })
+      .catch((error) => {
+        console.error(error);
+        handleCloseModal();
+      });
+    setTempUsers([{ name: "" }]);
     return;
   }
 
   function handleUsersChange(e, i) {
     setTempUsers((prev) =>
-      prev.map((v, idx) => (idx === i ? e.target.value : v))
+      prev.map((v, idx) => (idx === i ? { name: e.target.value } : v))
     );
   }
 
@@ -90,7 +100,7 @@ export default function AddExpenseModal({ isModalOpen, closeModal }) {
                           name="users"
                           className="bg-gray-50 mb-2 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                           placeholder="Name of Member"
-                          value={t}
+                          value={t.name}
                           onChange={(e) => handleUsersChange(e, i)}
                         />
                         {tempUsers.length !== 1 && (
@@ -113,7 +123,9 @@ export default function AddExpenseModal({ isModalOpen, closeModal }) {
                   <div className="w-[90%] flex justify-between items-start gap-8">
                     <div className="flex gap-3 items-center mt-3">
                       <button
-                        onClick={() => setTempUsers((prev) => [...prev, ""])}
+                        onClick={() =>
+                          setTempUsers((prev) => [...prev, { name: "" }])
+                        }
                         className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                       >
                         <svg

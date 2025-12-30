@@ -237,10 +237,10 @@ export default function GroupTransaction() {
           setIsLogModalOpen(false);
         }}
       />
-      <div className="flex flex-row justify-between m-4 gap-2">
+      <div className="flex m-4 gap-2 justify-between">
         <button
           onClick={() => navigate("/groups")}
-          className="flex items-center text-blue-700 dark:text-blue-400 border border-blue-700 dark:border-blue-400 px-2.5 py-2.5 rounded-lg text-sm hover:bg-blue-100 dark:hover:bg-blue-800"
+          className="col-span-2 flex justify-center items-center text-blue-700 border border-blue-700 rounded-lg hover:bg-blue-100 md:col-span-1 text-xs px-1 py-1 md:text-xs md:px-2.5 md:py-2.5"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -259,24 +259,24 @@ export default function GroupTransaction() {
         </button>
         <button
           onClick={openUserModal}
-          className="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          className="text-white bg-blue-700 hover:bg-blue-800 rounded-lg font-medium flex-1 text-xs px-2 py-2 md:text-sm md:px-5 whitespace-nowrap"
           type="button"
         >
           Add Members
         </button>
         <button
           onClick={openModal}
-          className="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          className="text-white bg-blue-700 hover:bg-blue-800 rounded-lg font-medium flex-1 text-xs px-2 py-2 md:text-sm md:px-5 whitespace-nowrap"
           type="button"
         >
           Add Expense
         </button>
         <button
           onClick={toggleSimplifiedExpense}
-          className="w-48 block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          className="text-white bg-blue-700 hover:bg-blue-800 rounded-lg font-medium flex-1 text-xs px-2 py-2 md:text-sm md:px-5"
           type="button"
         >
-          {simplifiedExpenseState ? "Group Expense" : "Simplified Settlemets"}
+          {simplifiedExpenseState ? "Expenses" : "Simplified"}
         </button>
       </div>
       {users.length !== 0 && (
@@ -291,7 +291,6 @@ export default function GroupTransaction() {
         <AddUserModal
           isModalOpen={addUserModalState}
           closeModal={closeUserModal}
-          users={users}
           groupCode={groupCode}
         />
       )}
@@ -332,14 +331,37 @@ export default function GroupTransaction() {
               <div className="flex justify-end items-center space-x-2">
                 {/* --- Added stacked profile pictures --- */}
                 <div className="flex items-center -space-x-1.5 sm:-space-x-2">
-                  {group?.users?.slice(0, 3).map((member, index) => (
-                    <img
-                      key={index}
-                      src={member.user.photo || "/default-avatar.png"}
-                      alt={member.user.name || "User"}
-                      className="w-7 h-7 sm:w-8 sm:h-8 rounded-full border-2 border-white dark:border-gray-700"
-                    />
-                  ))}
+                  {group?.users?.slice(0, 3).map((member, index) => {
+                    const name = member.user.name || "User";
+                    const initial = name.charAt(0).toUpperCase();
+
+                    // Random soft colors list (better than pure random)
+                    const colors = [
+                      "#F87171",
+                      "#FBBF24",
+                      "#34D399",
+                      "#60A5FA",
+                      "#A78BFA",
+                    ];
+                    const bg = colors[index % colors.length];
+
+                    return member.user.photo ? (
+                      <img
+                        key={index}
+                        src={member.user.photo}
+                        alt={name}
+                        className="w-7 h-7 sm:w-8 sm:h-8 rounded-full border-2 border-white dark:border-gray-700"
+                      />
+                    ) : (
+                      <div
+                        key={index}
+                        style={{ backgroundColor: bg }}
+                        className="w-7 h-7 sm:w-8 sm:h-8 rounded-full border-2 border-white dark:border-gray-700 flex items-center justify-center text-white text-xs font-semibold"
+                      >
+                        {initial}
+                      </div>
+                    );
+                  })}
                   {group?.users?.length > 3 && (
                     <div className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-full bg-gray-300 text-gray-800 text-xs font-semibold border-2 border-white dark:border-gray-700">
                       +{group.users.length - 3}
